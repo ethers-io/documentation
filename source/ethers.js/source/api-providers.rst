@@ -25,29 +25,29 @@ Connecting to Ethereum
 
 There are several ways to connect to the Ethereum blockchain:
 
-new :sup:`providers` . EtherscanProvider( [ testnet ] [ , apiToken ] )
-    Connect to the `Etherscan`_ blockchain `web service API <etherscan-api>`_.
+new :sup:`providers` . EtherscanProvider( [ network ] [ , apiToken ] )
+    Connect to the `Etherscan`_ blockchain `web service API`_.
 
-    **default:** *testnet*\ =false, *apiToken*\ =null
+    **default:** *network*\ ='homestead', *apiToken*\ =null
 
-new :sup:`providers` . JsonRpcProvider( [ url ] [ , testnet ] [, chainId ] )
+new :sup:`providers` . JsonRpcProvider( [ url ] [ , network ] )
     Connect to the `JSON-RPC API`_ *url* of an Ethereum node, such as `Parity`_ or `Geth`_.
 
-    **default:** *url*\ ="http://localhost:8545/", *testnet*\ =false, *chainId*\ =network default
+    **default:** *url*\ ="http://localhost:8545/", *network*\ ='homestead'
 
-new :sup:`providers` . InfuraProvider( [ testnet ] [ , apiAccessToken ] )
+new :sup:`providers` . InfuraProvider( [ network ] [ , apiAccessToken ] )
     Connect to the `INFURA`_ hosted network of Ethereum nodes.
 
-    **default:** *testnet*\ =false, *apiAccessToken*\ =null
+    **default:** *network*\ ='homestead', *apiAccessToken*\ =null
 
 new :sup:`providers` . FallbackProvider( providers )
     Improves reliability by attempting each provider in turn, falling back to the
     next in the list if an error was encountered.
 
-:sup:`providers` . getDefaultProvider( [ testnet ] )
+:sup:`providers` . getDefaultProvider( [ network ] )
     This automatically creates a FallbackProvider backed by INFURA and Etherscan; recommended
 
-    **default:** *testnet*\ =false
+    **default:** *network*\ =''homestead
 
 
 *Examples*
@@ -58,13 +58,18 @@ new :sup:`providers` . FallbackProvider( providers )
     var providers = require('ethers').providers;
 
     // Connect to Ropsten (the test network)
-    var testnet = true;
+
+    // You may specify any of:
+    // - boolean; true = ropsten, false = homestead
+    // - object; { name: 'ropsten', chainId: 3 } (see ethers.networks);
+    // - string; e.g. 'homestead', 'ropsten', 'rinkeby', 'kovan'
+    var network = providers.networks.ropsten;
 
     // Connect to INFUA
-    var infuraProvider = new providers.InfuraProvider(testnet);
+    var infuraProvider = new providers.InfuraProvider(network);
 
     // Connect to Etherscan
-    var etherscanProvider = new providersInfuraProvider(testnet);
+    var etherscanProvider = new providers.EtherscanProvider(network);
 
     // Creating a provider to automatically fallback onto Etherscan
     // if INFURA is down
@@ -74,10 +79,10 @@ new :sup:`providers` . FallbackProvider( providers )
     ]);
 
     // This is equivalent to using the getDefaultProvider
-    var provider = providers.getDefaultProvider(testnet)
+    var provider = providers.getDefaultProvider(network)
 
     // Connect to a local Parity instance
-    var provider = new providers.JsonRpcProvider('http://localhost:8545', testnet);
+    var provider = new providers.JsonRpcProvider('http://localhost:8545', network);
 
 -----
 
@@ -93,11 +98,15 @@ Provider
 --------
 
 :sup:`prototype` . testnet
-    Whether the provider is on the testnet (Ropsten)
+    Whether the provider is on the testnet (Ropsten); this is being deprecated in favor
+    of **prototype.name**
+
+:sup:`prototype` . name
+    The name of the network the provider is connected to (e.g. 'homestead', 'ropsten', 'rinkeby', 'kovan')
 
 :sup:`prototype` . chainId
     The chain ID (or network ID) this provider is connected as; this is used by
-    signers to prevent `replay attacks <replay-attack>`_ across compatible networks
+    signers to prevent `replay attacks`_ across compatible networks
 
 FallbackProvider :sup:`( inherits from Provider )`
 --------------------------------------------------
@@ -136,14 +145,14 @@ Account Actions
 
 :sup:`prototype` . getBalance ( addressOrName [ , blockTag ] )
     Returns a :ref:`Promise <promise>` with the balance (as a :ref:`BigNumber <bignumber>`) of
-    *addressOrName* at *blockTag*. (See: `Block Tags <blocktag>`_)
+    *addressOrName* at *blockTag*. (See: :ref:`Block Tags <blocktag>`)
 
     **default:** *blockTag*\ ="latest"
 
 :sup:`prototype` . getTransactionCount ( addressOrName [ , blockTag ] )
     Returns a :ref:`Promise <promise>` with the number of sent transactions (as a Number) from
     *addressOrName* at *blockTag*. This is also the nonce required to send a new
-    transaction. (See: `Block Tags <blocktag>`_)
+    transaction. (See: :ref:`Block Tags <blocktag>`)
 
     **default:** *blockTag*\ ="latest"
 
@@ -192,14 +201,14 @@ Blockchain Status
     Returns a :ref:`Promise <promise>` with the current gas price (as a :ref:`BigNumber <bignumber>`).
 
 :sup:`prototype` . getBlock ( blockHashOrBlockNumber )
-    Returns a :ref:`Promise <promise>` with the block at *blockHashorBlockNumber*. (See: `Block Responses <blockresponse>`_)
+    Returns a :ref:`Promise <promise>` with the block at *blockHashorBlockNumber*. (See: :ref:`Block Responses <blockresponse>`)
 
 :sup:`prototype` . getTransaction ( transactionHash )
-    Returns a :ref:`Promise <promise>` with the transaction with *transactionHash*. (See: `Transaction Results <transactionresult>`_)
+    Returns a :ref:`Promise <promise>` with the transaction with *transactionHash*. (See: :ref:`Transaction Results <transactionresult>`)
 
 :sup:`prototype` . getTransactionReceipt ( transactionHash )
     Returns a :ref:`Promise <promise>` with the transaction receipt with *transactionHash*.
-    (See: `Transaction Receipts <transactionReceipts>`_)
+    (See: :ref:`Transaction Receipts <transactionReceipt>`)
 
 *Examples*
 ----------
@@ -285,14 +294,14 @@ usually be used instead.
 :sup:`prototype` . call ( transaction )
     Send the **read-only** (constant) *transaction* to a single Ethereum node and
     return a :ref:`Promise <promise>` with the result (as a :ref:`hex string <hexstring>`) of executing it.
-    (See `Transaction Requests <transactionrequest>`_)
+    (See :ref:`Transaction Requests <transactionrequest>`)
 
     This is free, since it does not change any state on the blockchain.
 
 :sup:`prototype` . estimateGas ( transaction )
     Send a *transaction* to a single Ethereum node and return a :ref:`Promise <promise>` with the
     estimated amount of gas required (as a :ref:`BigNumber <bignumber>`) to send it.
-    (See `Transaction Requests <transactionrequest>`_)
+    (See :ref:`Transaction Requests <transactionrequest>`)
 
     This is free, but only an estimate. Providing too little gas will result in a
     transaction being rejected (while still consuming all provided gas).
@@ -322,13 +331,13 @@ Contract State
 
 :sup:`prototype` . getStorageAt ( addressOrName , position [ , blockTag ] )
     Returns a :ref:`Promise <promise>` with the value (as a :ref:`hex string <hexstring>`) at
-    *addressOrName* in *position* at *blockTag*. (See `Block Tags <blocktag>`_)
+    *addressOrName* in *position* at *blockTag*. (See :ref:`Block Tags <blocktag>`)
 
     default: *blockTag*\ = "latest"
 
 :sup:`prototype` . getLogs ( filter )
     Returns a :ref:`Promise <promise>` with an array (possibly empty) of the logs that
-    match the *filter*. (See `Filters <filter>`_)
+    match the *filter*. (See :ref:`Filters <filter>`)
 
 *Examples*
 ----------
@@ -343,7 +352,7 @@ Events
 ======
 
 These methods allow management of callbacks on certain events on the blockchain
-and contracts. They are largely based on the `EventEmitter API <events>`_.
+and contracts. They are largely based on the `EventEmitter API`_.
 
 :sup:`prototype` . on ( eventType , callback )
     Register a callback for any future *eventType*; see below for callback parameters
@@ -381,7 +390,7 @@ any address
 
 any transaction hash
     When the coresponding transaction is mined; also see
-    `Waiting for Transactions <waitForTransaction>`_
+    :ref:`Waiting for Transactions <waitForTransaction>`
 
     ``callback( transaction )``
 
@@ -595,7 +604,7 @@ Transaction Receipts
 Filters
 -------
 
-Filtering on topics supports a `somewhat complicated <api-topics>`_ specification, however,
+Filtering on topics supports a `somewhat complicated`_ specification, however,
 for the vast majority of filters, a single topic is usually sufficient (see the example below).
 
 The *EtherscanProvider* only supports a single topic.
@@ -635,13 +644,13 @@ Provider Specific Extra API Calls
 -----
 
 .. _Etherscan: https://etherscan.io/apis
-.. _etherscan-api: https://etherscan.io/apis
+.. _web service API: https://etherscan.io/apis
 .. _INFURA: https://infura.io
 .. _Parity: https://ethcore.io/parity.html
 .. _Geth: https://geth.ethereum.org
 .. _JSON-RPC API: https://github.com/ethereum/wiki/wiki/JSON-RPC
-.. _events: https://nodejs.org/dist/latest-v6.x/docs/api/events.html
-.. _replay-attack: https://github.com/ethereum/EIPs/issues/155
-.. _api-topics: https://github.com/ethereum/wiki/wiki/JSON-RPC#a-note-on-specifying-topic-filters
+.. _EventEmitter API: https://nodejs.org/dist/latest-v6.x/docs/api/events.html
+.. _replay attacks: https://github.com/ethereum/EIPs/issues/155
+.. _somewhat complicated: https://github.com/ethereum/wiki/wiki/JSON-RPC#a-note-on-specifying-topic-filters
 
 .. EOF

@@ -85,6 +85,9 @@ be addressed by adding parameter explicit calls).
     An object that maps each ABI event name (lower case, with the "on"
     prefix) to a callback that is triggered when the event occurs.
 
+:sup:`prototype` . connect ( providerOrSigner )
+    Create a new instance of the Contract connected as the new *providerOrSigner*.
+
 .. _example:
 
 Examples
@@ -179,6 +182,17 @@ Examples
 
      // This is identical to the above send
      // var sendPromise = contract.functions.setValue("Hello World");
+
+     // Overriding parameters; any of these are optional and get passed
+     // as an additional parameter adter all function parameters.
+     var overrideOptions = {
+         gasLimit: 250000,
+         gasPrice: 9000000000,
+         nonce: 0,
+         value: ethers.utils.parseEther('1.0')
+     };
+
+     var sendPromise = contract.setValue("Hello World", overrideOptions);
 
 
 *Example Event Registration* -- **valueChanged ( author , value )** ::
