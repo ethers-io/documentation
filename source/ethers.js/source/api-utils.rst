@@ -293,6 +293,41 @@ Cryptographic Functions
 
 -----
 
+Solidity Cryptographic Functions
+================================
+
+Solidity uses a `non-standard packed mode`_ to encode parameters that are passed
+into its hashing functions. The parameter types and values can be used to compute
+the result of teh hash functions as would be performed by Solidity.
+
+:sup:`utils` . solidityKeccak256 ( types, values )
+    Compute the keccak256 cryptographic hash using the Solidity non-standard (tightly)
+    packed data for *values* given the *types*.
+
+:sup:`utils` . soliditySha256 ( types, values )
+    Compute the SHA256 cryptographic hash using the Solidity non-standard (tightly)
+    packed data for *values* given the *types*.
+
+:sup:`utils` . solidityPack ( types, values )
+    Compute the Solidity non-standard (tightly) packed data for *values* given the *types*.
+
+
+*Examples*
+----------
+
+::
+
+    utils.solidityKeccak256([ 'int8', 'bytes1', 'string' ], [ -1, '0x42', 'hello' ]);
+    // '0x52d7e6a62ca667228365be2143375d0a2a92a3bd4325dd571609dfdc7026686e'
+
+    utils.soliditySha256([ 'int8', 'bytes1', 'string' ], [ -1, '0x42', 'hello' ]);
+    // '0x1eaebba7999af2691d823bf0c817e635bbe7e89ec7ed32a11e00ca94e86cbf37'
+
+    utils.solidityPack([ 'int8', 'bytes1', 'string' ], [ -1, '0x42', 'hello' ])
+    // '0xff4268656c6c6f'
+
+-----
+
 .. _api-arrayish:
 
 Arrayish
@@ -366,5 +401,7 @@ of the transaction.
     // "0x0CcCC7507aEDf9FEaF8C8D731421746e16b4d39D"
 
 -----
+
+.. _non-standard packed mode: http://solidity.readthedocs.io/en/develop/abi-spec.html#non-standard-packed-mode
 
 .. EOF
