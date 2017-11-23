@@ -264,6 +264,14 @@ Static Methods
         // }
     });
 
+    // Parse event data (only returns the non-indexed entries)
+    var result = valueChanged.parse(eventData);
+
+    // Parse event topics and data (returns all entries)
+    // Note: Any indexed entry which is not a 32 byte value is hashed.
+    //       Dynamic arrays are hashed as a static sized array.
+    var result = valueChanged(topics, eventData);
+
 -----
 
 Provider (Sub-Classing)
