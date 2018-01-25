@@ -65,7 +65,7 @@ Serving Content
 Content for an Ethers application may be served using nearly any service or technology.
 Simply include the `Ethers App Library`_ (or download a copy and serve it yourself)::
 
-    <script type="text/javascript" src="https://cdn.ethers.io/ethers-app-v0.2.min.js">
+    <script type="text/javascript" src="https://cdn.ethers.io/scripts/ethers-app-v0.2.min.js">
     </script>
 
 Here is a quick list of some services we recommend for building Ethers applications:
