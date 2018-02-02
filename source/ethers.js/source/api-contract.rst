@@ -351,6 +351,8 @@ Solidity compiler.
 
 -----
 
+.. _custom-signer:
+
 Custom Signer
 =============
 
