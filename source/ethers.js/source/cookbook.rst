@@ -147,6 +147,40 @@ Transactions Confirm UI (with a Custom Signer)
 
 -----
 
+Break Apart r, s and recoveryParam from a Message Signature
+===========================================================
+
+*Source Code*
+-------------
+
+::
+
+    var ethers = require('ethers');
+
+    function getSignature(privateKey, message) {
+        var wallet = new Wallet(privateKey);
+        var signature = wallet.signMessage(message);
+        signature = ethers.utils.arrayify(signature);
+        return {
+            r: ethers.utils.hexlify(signature.slice(0, 32)),
+            s: ethers.utils.hexlify(signature.slice(32, 64)),
+            recoveryParam: (1 - (signature[64] & 0x1))
+        };
+    }
+
+    var privateKey = '0x0123456789012345678901234567890123456789012345678901234567890123';
+    var message = "Hello World";
+    var signature = getSignature(privateKey, message);
+
+    console.log(signature);
+    // {
+    //   r: '0xe0ed34fbbe927a58267ce2e8067a611c69869e20e731bc99187a8bc97058664c',
+    //   s: '0x16de07f7660f06ce0985d1d8e063726783033fda59b307897f26a21392d62b3a',
+    //   recoveryParam: 1
+    // }
+
+-----
+
 Coalesce Jaxx Wallets
 =====================
 
