@@ -40,6 +40,11 @@ new :sup:`providers` . InfuraProvider( [ network ] [ , apiAccessToken ] )
 
     **default:** *network*\ ='homestead', *apiAccessToken*\ =null
 
+new :sup:`providers` . Web3Provider( web3Provider [ , network ] )
+    Connect to an existing Web3 provider (e.g. `web3Instance.currentProvider`).
+
+    **default:** *network*\ ='homestead'
+
 new :sup:`providers` . FallbackProvider( providers )
     Improves reliability by attempting each provider in turn, falling back to the
     next in the list if an error was encountered.
@@ -47,7 +52,7 @@ new :sup:`providers` . FallbackProvider( providers )
 :sup:`providers` . getDefaultProvider( [ network ] )
     This automatically creates a FallbackProvider backed by INFURA and Etherscan; recommended
 
-    **default:** *network*\ =''homestead
+    **default:** *network*\ ='homestead'
 
 
 *Examples*
@@ -83,6 +88,10 @@ new :sup:`providers` . FallbackProvider( providers )
 
     // Connect to a local Parity instance
     var provider = new providers.JsonRpcProvider('http://localhost:8545', network);
+
+    // Connect to an injected Web3's provider (e.g. MetaMask)
+    var web3Provider = new providers.Web3Provider(web3.currentProvider, network);
+
 
 -----
 
@@ -137,6 +146,17 @@ InfuraProvider :sup:`( inherits from JsonRpcProvider )`
 
 :sup:`prototype` . apiAccessToken
     The INFURA API Access Token (or null if not specified)
+
+Web3Provider :sup:`( inherits from JsonRpcProvider )`
+-------------------------------------------------------
+
+:sup:`prototype` . provider
+    The underlying Web3-compatible provider from the Web3 library, for example
+    an `HTTPProvider`_ or `IPCProvider`_. The only required method on a Web3 provider
+    is:
+
+    *sendAsync ( method , params , callback )*
+
 
 -----
 
@@ -629,16 +649,41 @@ The *EtherscanProvider* only supports a single topic.
 Provider Specific Extra API Calls
 =================================
 
-:sup:`EtherscanProvider` . getEtherPrice()
+Etherscan
+---------
+
+:sup:`EtherscanProvider` . getEtherPrice ( )
     Returns a :ref:`Promise <promise>` with the price of ether in USD.
 
-*Examples*
-----------
+**Example**
 
 ::
 
     provider.EtherscanProvider.getEtherPrice().then(function(price) {
         console.log("Ether price in USD: " + price);
+    });
+
+
+Web3Provider
+------------
+
+:sup:`prototype` . listAccounts ( )
+    Returns a :ref:`Promise <promise>` with a list of all accounts the node connected
+    to this Web3 controls.
+
+:sup:`prototype` . getSigner( [ address ] )
+    Returns a :ref:`Signer <custom-signer>` that uses an account on the node
+    the Web3 object is connected to. If no address is specified, the first
+    account on the node is used.
+
+
+**Examples**
+
+::
+
+    web3Provider.listAccounts().then(function(accounts) {
+        var signer = web3Provider.getSigner(accounts[1]);
+        console.log(signer);
     });
 
 -----
@@ -652,5 +697,7 @@ Provider Specific Extra API Calls
 .. _EventEmitter API: https://nodejs.org/dist/latest-v6.x/docs/api/events.html
 .. _replay attacks: https://github.com/ethereum/EIPs/issues/155
 .. _somewhat complicated: https://github.com/ethereum/wiki/wiki/JSON-RPC#a-note-on-specifying-topic-filters
+.. _HTTPProvider: https://github.com/ethereum/web3.js/blob/develop/lib/web3/httpprovider.js
+.. _IPCProvider: https://github.com/ethereum/web3.js/blob/develop/lib/web3/ipcprovider.js
 
 .. EOF
