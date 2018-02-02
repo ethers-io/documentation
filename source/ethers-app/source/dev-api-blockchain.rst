@@ -62,7 +62,7 @@ Blockchain State
 :sup:`ethers.blockchain` . getGasPrice ( )
     Return a `Promise`_ with the current gas price, in wei.
 
-:sup:`ethers.blockchain` . blockNumber ( )
+:sup:`ethers.blockchain` . getBlockNumber ( )
     Return a `Promise`_ with the number of the most recent block.
 
 :sup:`ethers.blockchain` . getBlock ( blockhashOrNumber )
