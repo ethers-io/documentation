@@ -123,7 +123,7 @@ Prototype
     the Ethereum network to query its state and send transactions
 
 :sup:`prototype` . getAddress ( )
-    A function which returns the address; for Wallet, this simple returns the
+    A function which returns the address; for Wallet, this simply returns the
     `address`_ property
 
 :sup:`prototype` . sign ( transaction )
@@ -142,6 +142,11 @@ Prototype
 
 **Signing Transactions** ::
 
+    var ethers = require('ethers');
+    var Wallet = ethers.Wallet;
+    var utils = ethers.utils;
+    var providers = ethers.providers;
+ 
     var privateKey = "0x0123456789012345678901234567890123456789012345678901234567890123";
     var wallet = new Wallet(privateKey);
 
@@ -171,6 +176,7 @@ Prototype
     //   "24c57b3be967e2074220fca13e79"
 
     // This can now be sent to the Ethereum network
+    var provider = providers.getDefaultProvider();
     provider.sendTransaction(signedTransaction).then(function(hash) {
         console.log('Hash: ' + hash);
         // Hash:
@@ -232,13 +238,13 @@ These operations require the wallet have a provider attached to it.
     var wallet = new ethers.Wallet(privateKey);
     wallet.provider = ethers.providers.getDefaultProvider();
 
-    var balancePromise = wallet.getBalance(address);
+    var balancePromise = wallet.getBalance();
 
     balancePromise.then(function(balance) {
         console.log(balance);
     });
 
-    var transactionCountPromise = wallet.getTransactionCount(address);
+    var transactionCountPromise = wallet.getTransactionCount();
 
     transactionCountPromise.then(function(transactionCount) {
         console.log(transactionCount);
@@ -254,8 +260,9 @@ These operations require the wallet have a provider attached to it.
 
     // We must pass in the amount as wei (1 ether = 1e18 wei), so we use
     // this convenience function to convert ether to wei.
-    var amount = ethers.parseEther('1.0');
+    var amount = ethers.utils.parseEther('1.0');
 
+    var address = '0x88a5c2d9919e46f883eb62f7b8dd9d0cc45bc290';
     var sendPromise = wallet.send(address, amount);
 
     sendPromise.then(function(transactionHash) {
@@ -280,7 +287,7 @@ These operations require the wallet have a provider attached to it.
 
     var privateKey = '0x0123456789012345678901234567890123456789012345678901234567890123';
     var wallet = new ethers.Wallet(privateKey);
-    wallet.provider = ethers.providers.getDefaultProvider();
+    wallet.provider = ethers.providers.getDefaultProvider('ropsten');
 
     var transaction = {
         // Recommendation: omit nonce; the provider will query the network
@@ -288,7 +295,7 @@ These operations require the wallet have a provider attached to it.
 
         // Gas Limit; 21000 will send ether to another use, but to execute contracts
         // larger limits are required. The provider.estimateGas can be used for this.
-        gasLimit: 1000000
+        gasLimit: 1000000,
 
         // Recommendations: omit gasPrice; the provider will query the network
         //gasPrice: utils.bigNumberify("20000000000"),
@@ -335,34 +342,45 @@ Parsing Transactions
 ::
 
     // Mainnet: 
+    var ethers = require('ethers');
+    var Wallet = ethers.Wallet;
+    var utils = ethers.utils;
+    var privateKey = '0x0123456789012345678901234567890123456789012345678901234567890123';
+    var wallet = new ethers.Wallet(privateKey);
+
     var raw = "0xf87083154262850500cf6e0083015f9094c149be1bcdfa69a94384b46a1f913" +
                 "50e5f81c1ab880de6c75de74c236c8025a05b13ef45ce3faf69d1f40f9d15b007" +
                 "0cc9e2c92f"
+
     var transaction = {
-        to: 0123...
-        value: 0123...
+        nonce: 1393250,
+        gasLimit: 21000,
+        gasPrice: utils.bigNumberify("20000000000"),
+
+        to: "0xc149Be1bcDFa69a94384b46A1F91350E5f81c1AB",
+
+        value: utils.parseEther("1.0"),
+        data: "0x",
+
+        // This ensures the transaction cannot be replayed on different networks
+        chainId: ethers.providers.Provider.chainId.homestead
     };
+
     var signedTransaction = wallet.sign(transaction);
     var transaction = Wallet.parseTransaction(signedTransaction);
 
     console.log(transaction);
-    // {
-    //     to: "0xc149Be1bcDFa69a94384b46A1F91350E5f81c1AB",
-    //     from: "0xEA674fdDe714fd979de3EdF0F56AA9716B898ec8",
-    //
-    //     chainId: 1,
-    //
-    //     gasLimit: utils.bigNumberify("90000"),
-    //     gasPrice: utils.bigNumberify("21488430592"),
-    //
-    //     nonce: 1393250
-    //     data: "0x",
-    //     value: utils.parseEther("1.0017071732629267"),
-    //
-    //     r: "0x5b13ef45ce3faf69d1f40f9d15b0070cc9e2c92f3df79ad46d5b3226d7f3d1e8",
-    //     s: "0x535236e497c59e3fba93b78e124305c7c9b20db0f8531b015066725e4bb31de6",
-    //     v: 37,
-    // }
+    // { nonce: 1393250,
+    //   gasPrice: BigNumber { _bn: <BN: 4a817c800> },
+    //   gasLimit: BigNumber { _bn: <BN: 5208> },
+    //   to: '0xc149Be1bcDFa69a94384b46A1F91350E5f81c1AB',
+    //   value: BigNumber { _bn: <BN: de0b6b3a7640000> },
+    //   data: '0x',
+    //   v: 38,
+    //   r: '0x3cf1f5af8bd11963193451096d86635aed589572c184ac8696dd99c9c044ded3',
+    //   s: '0x08c52dbf1383492c72598511bb135179ec93b062032d2a0d002214644ba39a2c',
+    //   chainId: 1,
+    //   from: '0x14791697260E4c9A71f18484C9f997B308e59325' }
 
 -----
 
@@ -379,7 +397,7 @@ Verifying Messages
 
     var signature = "0xddd0a7290af9526056b4e35a077b9a11b513aa0028ec6c9880948544508f3c63" +
                       "265e99e47ad31bb2cab9646c504576b3abc6939a1710afc08cbf3034d73214b8" +
-                      "1c" +
+                      "1c";
     var address = Wallet.verifyMessage('hello world', signature);
     console.log(address);
     // '0x14791697260E4c9A71f18484C9f997B308e59325'
