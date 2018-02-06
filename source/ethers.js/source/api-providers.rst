@@ -169,7 +169,10 @@ Account Actions
 
 ::
 
-    var provider = providers.getDefaultProvider();
+    var ethers = require('ethers');
+    var providers = ethers.providers;
+ 
+    var provider = providers.getDefaultProvider('ropsten');
 
     var address = "0x02F024e0882B310c6734703AB9066EdD3a10C6e0";
 
@@ -271,16 +274,18 @@ of an address to get a more human readbale name.
 
 **Resolving Names**\ ::
 
-    provider.resolveName('ricmoo.firefly.eth').then(function(address) {
+    var providers = require('ethers').providers;
+    var provider = providers.getDefaultProvider();
+    provider.resolveName('registrar.firefly.eth').then(function(address) {
         console.log(address);
-        // '0x32DEF047DeFd076DB21A2D759aff2A591c972248'
+        // '0x6fC21092DA55B392b045eD78F4732bff3C580e2c'
     });
 
 **Looking up Addresses**\ ::
 
-    provider.lookupAddress('0x32DEF047DeFd076DB21A2D759aff2A591c972248').then(function(name) {
+    provider.lookupAddress('0x6fC21092DA55B392b045eD78F4732bff3C580e2c').then(function(name) {
         console.log(name);
-        // 'ricmoo.firefly.eth'
+        // 'registrar.firefly.eth'
     });
 
 -----
