@@ -8,7 +8,7 @@ transactions and prove ownership on the Ethereum network.
 
 ::
 
-    var Wallet = ethers.Wallet;
+    var Wallet = require('ethers').Wallet;
 
 
 -----

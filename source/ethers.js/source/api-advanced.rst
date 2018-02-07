@@ -83,7 +83,7 @@ Static Methods
 
 ::
 
-    var HDNode = ethers.HDNode;
+    var HDNode = require('ethers').HDNode;
 
     var mnemonic = "radar blur cabbage chef fix engine embark joy scheme fiction master release";
 
@@ -98,7 +98,7 @@ Static Methods
 Interface
 =========
 
-The Interface Object is a meta-class that accepts a Solidity (or compitible)
+The Interface Object is a meta-class that accepts a Solidity (or compatible)
 Application Binary Interface (ABI) and populates functions to deal with encoding
 and decoding the parameters to pass in and results returned.
 
@@ -148,7 +148,7 @@ Static Methods
 
 **Creating an Interface Instance** ::
 
-    var Interface = ethers.Interface;
+    var Interface = require('ethers').Interface;
 
     var abi = [
         {
@@ -182,7 +182,7 @@ Static Methods
 
 **Call (Constant) Functions** ::
 
-    var getValueInfo = iface.function.getValue();
+    var getValueInfo = iface.functions.getValue();
 
     console.log(getValueInfo);
     // {
@@ -237,40 +237,68 @@ Static Methods
      // }
 
 **Events** ::
+   
+    var ethers = require('ethers');
+    var Interface = ethers.Interface;
+    var abi = [
+        {
+            anonymous: false,
+            inputs:[
+                { indexed:true, name: "from", type: "address" },
+                { indexed:true, name: "to", type: "address" },
+                { indexed:false, name: "value", type: "uint256" }
+            ],
+            name: "Transfer",
+            type: "event"
+        }
+    ];
+    // NOTE: "interface" is a reserved keyword in JavaScript
+    var iface = new Interface(abi)
+    var transferInfo = iface.events.Transfer();
+    console.log(transferInfo);
+    // EventDescription {
+    //    inputs: 
+    //      [ { indexed: true, name: 'from', type: 'address' },
+    //        { indexed: true, name: 'to', type: 'address' },
+    //        { indexed: false, name: 'value', type: 'uint256' } ],
+    //    name: 'Transfer',
+    //    signature: 'Transfer(address,address,uint256)',
+    //    topics: [ '0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef' ],
+    //    parse: [Function] }
 
-    var valueChangedInfo = iface.events.valueChanged();
-
-    console.log(valueChangedInfo);
-    // {
-    //     name: "valueChanged",
-    //     inputs: (same as iface.abi[2].inputs,
-    //     parse: function(data),
-    //     signature: "valueChanged(string,string)",
-    //     topics: [
-    //         "0x68ad6719a0070b3bb2f866fa0d46c8123b18cefe9b387ddb4feb6647ca418435"
-    //     ]
-    // }
 
     // To listen for this event:
-    provider.on(valueChangedInfo.topics, function(data) {
-        var result = valueChangedInfo.parse(data);
+    var provider = ethers.providers.getDefaultProvider();
+    provider.on(transferInfo.topics, function(log) {
+        // Parse event data (only returns the non-indexed entries)
+        var result = transferInfo.parse(log.data);
+        console.log('non-indexed entries: ', result);
 
-        console.log(result);
-        // {
-        //     0: "Hello World",
-        //     oldValue: "Hello World",
-        //     1: "Foobar!",
-        //     newValue: "Foobar!",
-        // }
+        // non-indexed entries:  Result {
+        //   '0': Indexed { indexed: true, hash: null },
+        //   '1': Indexed { indexed: true, hash: null },
+        //   '2': BigNumber { _bn: <BN: 1db3c5934d11e3c0000> },
+        //   from: Indexed { indexed: true, hash: null },
+        //   to: Indexed { indexed: true, hash: null },
+        //   value: BigNumber { _bn: <BN: 1db3c5934d11e3c0000> },
+        //   length: 3 }
+      
+
+        // Parse event topics and data (returns all entries)
+        // Note: Any indexed entry which is not a 32 byte value is hashed.
+        //       Dynamic arrays are hashed as a static sized array.
+        result = transferInfo.parse(log.topics, log.data);
+        console.log('all entries: ', result);
+
+        // all entries:  Result {
+        //   '0': '0x0000000000000000000000000000000000000000',
+        //   '1': '0x92239D0512c313E1b001b3996707F822a76C0901',
+        //   '2': BigNumber { _bn: <BN: 1db3c5934d11e3c0000> },
+        //   from: '0x0000000000000000000000000000000000000000',
+        //   to: '0x92239D0512c313E1b001b3996707F822a76C0901',
+        //   value: BigNumber { _bn: <BN: 1db3c5934d11e3c0000> },
+        //   length: 3 }
     });
-
-    // Parse event data (only returns the non-indexed entries)
-    var result = valueChanged.parse(eventData);
-
-    // Parse event topics and data (returns all entries)
-    // Note: Any indexed entry which is not a 32 byte value is hashed.
-    //       Dynamic arrays are hashed as a static sized array.
-    var result = valueChanged(topics, eventData);
 
 -----
 
@@ -306,6 +334,10 @@ Static Methods
 ----------
 
 ::
+
+    var ethers = require('ethers');
+    var utils = ethers.utils;
+    var Provider = ethers.providers.Provider;
 
     // The new provider Object
     function DemoProvider(testnet, somethingElse) {
@@ -472,12 +504,13 @@ Static Methods
 
 ::
 
+    var ethers = require('ethers');
     var SigningKey = ethers._SigningKey;
 
     var privateKey = '0x0123456789012345678901234567890123456789012345678901234567890123';
     var signingKey = new SigningKey(privateKey);
 
-    console.log('Address: ' + signingKey.address;
+    console.log('Address: ' + signingKey.address);
     // "Address: 0x14791697260E4c9A71f18484C9f997B308e59325"
 
     var message = "Hello World";
@@ -554,7 +587,7 @@ Static Methods
 
 ::
 
-    var RLP = requrie('ethers-utils/rlp');
+    var rlp = require('ethers').utils.RLP;
 
     var object = [ ["0x42"], "0x1234", [ [], [] ] ];
 

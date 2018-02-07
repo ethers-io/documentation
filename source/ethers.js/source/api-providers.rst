@@ -16,7 +16,7 @@ a :ref:`Contract <api-contract>`, this is managed for you by the contract.
 
 ::
 
-    var providers = ethers.providers;
+    var providers = require('ethers').providers;
 
 -----
 
