@@ -3,7 +3,7 @@ Utilities
 
 The utility functions exposed in both the *ethers* umbrella package and the *ethers-utils*::
 
-    var utils = ethers.utils;
+    var utils = require('ethers').utils;
 
 
 -----
@@ -101,6 +101,7 @@ Creating Instances
 
 ::
 
+    var utils = require('ethers').utils;
     var gasPriceWei = utils.bigNumberify("20902747399");
     var gasLimit = utils.bigNumberify(3000000);
 
@@ -139,6 +140,7 @@ Ether Strings and Wei
 
 ::
 
+    var utils = require('ethers').utils;
     var wei = utils.parseEther('1000.0');
     console.log(wei.toString(10));
     // "1000000000000000000000"
@@ -181,6 +183,7 @@ addresses, and it is often useful to be able to convert between them.
 
 ::
 
+    var utils = require('ethers').utils;
     var address = "0xd115bffabbdd893a6f7cea402e7338643ced44a6";
     var icapAddress = "XE93OF8SR0OWI6F4FO88KWO4UNNGG1FEBHI";
 
@@ -214,6 +217,7 @@ UTF-8 Strings
 
 ::
 
+    var utils = require('ethers').utils;
     var text = "Hello World";
 
     var bytes = utils.toUtf8Bytes(text);
@@ -252,6 +256,7 @@ Cryptographic Functions
 
 **Hashing Binary Data** ::
 
+    var utils = require('ethers').utils;
     console.log(utils.keccak256([ 0x42 ]));
     // '0x1f675bff07515f5df96737194ea945c36c41e7b4fcef307b7cd4d0e602a69111'
 
@@ -268,6 +273,7 @@ Cryptographic Functions
 
 **Hashing UTF-8 Strings** ::
 
+    var utils = require('ethers').utils;
     // Convert the string to binary data
     var utf8Bytes = utils.toUtf8Bytes('Hello World');
 
@@ -287,6 +293,7 @@ Cryptographic Functions
 
 **Random Bytes** ::
 
+    var utils = require('ethers').utils;
     console.log(utils.randomBytes(3));
     // Uint8Array [ 194, 22, 140 ]
 
@@ -317,13 +324,17 @@ the result of teh hash functions as would be performed by Solidity.
 
 ::
 
-    utils.solidityKeccak256([ 'int8', 'bytes1', 'string' ], [ -1, '0x42', 'hello' ]);
+    var utils = require('ethers').utils;
+    var result = utils.solidityKeccak256([ 'int8', 'bytes1', 'string' ], [ -1, '0x42', 'hello' ]);
+    console.log(result);
     // '0x52d7e6a62ca667228365be2143375d0a2a92a3bd4325dd571609dfdc7026686e'
 
-    utils.soliditySha256([ 'int8', 'bytes1', 'string' ], [ -1, '0x42', 'hello' ]);
+    result = utils.soliditySha256([ 'int8', 'bytes1', 'string' ], [ -1, '0x42', 'hello' ]);
+    console.log(result);
     // '0x1eaebba7999af2691d823bf0c817e635bbe7e89ec7ed32a11e00ca94e86cbf37'
 
-    utils.solidityPack([ 'int8', 'bytes1', 'string' ], [ -1, '0x42', 'hello' ])
+    result = utils.solidityPack([ 'int8', 'bytes1', 'string' ], [ -1, '0x42', 'hello' ]);
+    console.log(result);
     // '0xff4268656c6c6f'
 
 -----
@@ -378,7 +389,7 @@ Contract Addresses
 
 Every contract deployed on the Ethereum network requires an address (you can think
 of this as the memory address which the running application lives at). The address
-is generated from a cryptographic has of the address of the creator and the nonce
+is generated from a cryptographic hash of the address of the creator and the nonce
 of the transaction.
 
 :sup:`utils` . getContractAddress ( transaction )
@@ -391,6 +402,7 @@ of the transaction.
 
 ::
 
+    var utils = require('ethers').utils;
     // Ropsten: 0x5bdfd14fcc917abc2f02a30721d152a6f147f09e8cbaad4e0d5405d646c5c3e1
     var transaction = {
         from: '0xc6af6e1a78a6752c7f8cd63877eb789a2adb776c',
