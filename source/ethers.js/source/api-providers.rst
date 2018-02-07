@@ -321,9 +321,54 @@ usually be used instead.
 *Examples*
 ----------
 
-::
+**Call (Constant) Functions** ::
 
-    @TODO
+    var ethers = require('ethers');
+    var provider = ethers.providers.getDefaultProvider();
+    
+    // setup a transaction to call the CryptoKitties.symbol() function
+    // CryptoKitties contract address
+    var address = "0x06012c8cf97BEaD5deAe237070F9587f8E7A266d"; 
+    // first 8 nibbles of the hash of symbol()
+    var data = ethers.utils.id('symbol()').substring(0,10);
+    var transaction = {
+        to: address, 
+        data: data   
+    }
+    
+    provider.call(transaction).then(function(result) {
+        console.log(result);
+        // '0x000000000000000000000000000000000000000000000000000000000000002'+
+        // '00000000000000000000000000000000000000000000000000000000000000002'+
+        // '434b000000000000000000000000000000000000000000000000000000000000'
+    });
+
+**sendTransaction** :: 
+
+    var ethers = require('ethers');
+    var privateKey = '0x0123456789012345678901234567890123456789012345678901234567890123';
+    var wallet = new ethers.Wallet(privateKey);
+    wallet.provider = ethers.providers.getDefaultProvider('ropsten');
+    
+    var transaction = {
+        to: "0x88a5C2d9919e46F883EB62F7b8Dd9d0CC45bc290",
+        value: ethers.utils.parseEther("0.1") 
+    };
+    
+    var estimateGasPromise = wallet.estimateGas(transaction);
+    
+    estimateGasPromise.then(function(gasEstimate) {
+        console.log(gasEstimate.toString());
+        transaction.gasLimit = gasEstimate;
+    
+    
+        // Send the transaction
+        var sendTransactionPromise = wallet.sendTransaction(transaction);
+    
+        sendTransactionPromise.then(function(transactionHash) {
+           console.log(transactionHash);
+        });
+    });
 
 -----
 
@@ -347,9 +392,58 @@ Contract State
 *Examples*
 ----------
 
-::
+**getCode** :: 
 
-    @TODO
+    var ethers = require('ethers');
+    var provider = ethers.providers.getDefaultProvider();
+    
+    var contractAddress = '0x6fC21092DA55B392b045eD78F4732bff3C580e2c';
+    var contractEnsName = 'registrar.firefly.eth';
+    var codePromise = provider.getCode(contractEnsName);
+    codePromise.then(function(result){
+       console.log('getCode by ENS name:');
+       console.log(result);
+    });
+    
+    var codeByAddressPromise = provider.getCode(contractAddress);
+    codeByAddressPromise.then(function(result){
+       console.log('getCode by contract address:');
+       console.log(result);
+    });
+
+
+**getStorageAt** :: 
+
+
+    var ethers = require('ethers');
+    var provider = ethers.providers.getDefaultProvider();
+    
+    var contractEnsName = 'registrar.firefly.eth';
+    var storagePromise = provider.getStorageAt(contractEnsName, 0);
+    storagePromise.then(function(result){
+       console.log(result);
+    });
+
+**getLogs** :: 
+
+
+    var ethers = require('ethers');
+    var provider = ethers.providers.getDefaultProvider();
+    
+    var cryptoKittiesContractAddress = '0x06012c8cf97BEaD5deAe237070F9587f8E7A266d';
+    var topic = '0x241ea03ca20251805084d27d4440371c34a0b85ff108f6bb5611248f73818b80';
+    var filter = {
+       fromBlock: 5044502,
+       address: cryptoKittiesContractAddress,
+       topics: [ topic ]
+    }
+    var filterPromise = provider.getLogs(filter);
+    filterPromise.then(function(result){
+       console.log(result);
+    });
+
+
+
 
 -----
 
@@ -389,7 +483,7 @@ Event Types
     ``callback( blockNumber )``
 
 any address
-   When the balance of the coresposding address changes.
+    When the balance of the coresposding address changes
 
     ``callback( balance )``
 
@@ -425,12 +519,12 @@ Waiting for Transactions
     });
 
     // Get notified on account balance change
-    provider.on('0x46Fa84b9355dB0708b6A57cd6ac222950478Be1d', function(blockNumber) {
-        console.log('New Block: ' + blockNumber);
+    provider.on('0x46Fa84b9355dB0708b6A57cd6ac222950478Be1d', function(balance) {
+        console.log('New Balance: ' + balance);
     });
 
     // Get notified when a transaction is mined
-    provider.once(transactionHash, function(transction) {
+    provider.once(transactionHash, function(transaction) {
         console.log('Transaction Minded: ' + transaction.hash);
         console.log(transaction);
     );
@@ -444,6 +538,7 @@ Waiting for Transactions
 
 
     // Get notified when a contract event is logged
+    var eventTopic = '0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef';
     provider.on([ eventTopic ], function(log) {
         console.log('Event Log');
         console.log(log);
@@ -459,7 +554,7 @@ Objects
 Block Tag
 ---------
 
-A block tag is used to uniquely identify a block's position in th blockchain:
+A block tag is used to uniquely identify a block's position in the blockchain:
 
 a Number or :ref:`hex string <hexstring>`:
     Each block has a block number (eg. ``42`` or ``"0x2a``.
@@ -642,7 +737,10 @@ Provider Specific Extra API Calls
 
 ::
 
-    provider.EtherscanProvider.getEtherPrice().then(function(price) {
+    var ethers = require('ethers');
+    var provider = new ethers.providers.EtherscanProvider();
+
+    provider.getEtherPrice().then(function(price) {
         console.log("Ether price in USD: " + price);
     });
 
