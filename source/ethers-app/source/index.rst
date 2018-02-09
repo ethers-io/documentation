@@ -14,7 +14,7 @@ The code is open source under the `MIT license`_ and `available on GitHub`_.
 .. _ethers.io: https://ethers.io/
 .. _testnet.ethers.io: https://testnet.ethers.io/
 .. _MIT License: https://en.wikipedia.org/wiki/MIT_License
-.. _available on GitHub: https://github.com/ethers-io/ethers-io/
+.. _available on GitHub: https://github.com/ethers-io/ethers.io
 
 
 This documentation is split up into two main sections:

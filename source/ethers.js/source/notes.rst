@@ -65,17 +65,19 @@ The most useful operations you will need are:
 
 ::
 
+    var ethers = require('ethers');
     var targetAddress = "0x02F024e0882B310c6734703AB9066EdD3a10C6e0";
 
     var privateKey = "0x0123456789012345678901234567890123456789012345678901234567890123";
     var wallet = new ethers.Wallet(privateKey);
 
     // Promises we are interested in
+    var provider = ethers.providers.getDefaultProvider('ropsten');
     var balancePromise = provider.getBalance(wallet.address);
     var gasPricePromise = provider.getGasPrice();
-    var transactionCountPromise = provider.getCode(wallet.address);
+    var transactionCountPromise = provider.getTransactionCount(wallet.address);
 
-    var allPromise = Promsie.all([
+    var allPromises = Promise.all([
         gasPricePromise,
         balancePromise,
         transactionCountPromise
@@ -97,6 +99,7 @@ The most useful operations you will need are:
          var transaction = {
              to: targetAddress,
              gasPrice: gasPrice,
+             gasLimit: 21000,
              nonce: transactionCount,
 
              // The amount to send
@@ -117,7 +120,7 @@ The most useful operations you will need are:
         // This will be called once the transaction is sent
 
         // This promise will be resolve once the transaction has been mined.
-        return provider.waitForTransaction(transaction.hash);
+        return provider.waitForTransaction(transaction);
     });
 
     minedPromise.then(function(transaction) {

@@ -28,14 +28,16 @@ Parity
 ::
 
     var fs = require('fs');
+    var path = require('path');
 
     var ethers = require('ethers');
-    var provider = ethers.providers.defaultProvider();
+    var provider = ethers.providers.getDefaultProvider();
 
-    var filenames = fs.readDirSync('.');
+    var dirname = path.join(process.env.HOME, '.ethereum', 'keystore');
+    var filenames = fs.readdirSync(dirname);
 
     filenames.forEach(function(filename) {
-        fs.readFile(filename, function(error, data) {
+        fs.readFile(path.join(dirname,filename), function(error, data) {
             if (error) {
                 console.log('Error reading file: ' + error.message);
                 return;
@@ -43,7 +45,7 @@ Parity
 
             var address = JSON.parse(data.toString()).address;
             provider.getBalance(address).then(function(balance) {
-                console.log(address + ':' + ethers.formatEther(balance));
+                console.log(address + ':' + ethers.utils.formatEther(balance));
             });
         });
     });
@@ -103,8 +105,6 @@ Transactions Confirm UI (with a Custom Signer)
 -------------
 
 ::
-
-    var ethers = require('ethers');
 
     function CustomSigner(privateKey) {
 
@@ -205,7 +205,8 @@ This also results in paying multiple transaction fees (1 fee per account to merg
 
     var provider = ethers.providers.getDefaultProvider();
 
-    var hdnode = ethers.HDNode.fromMnemonic();
+    var mnemonic = "radar blur cabbage chef fix engine embark joy scheme fiction master release";
+    var hdnode = ethers.HDNode.fromMnemonic(mnemonic);
     hdnode = hdnode.derivePath("m/44'/60'/0'/0");
 
     @TODO:
@@ -231,13 +232,13 @@ Access Funds in a Mnemonic Phrase Wallet
         // @TODO: Include some non-standard wallet paths
     };
 
-    var mnemonic = "";
-
+    var mnemonic = "radar blur cabbage chef fix engine embark joy scheme fiction master release";
     var hdnode = ethers.HDNode.fromMnemonic(mnemonic);
     var node = hdnode.derivePath(walletPath.standard);
 
-    var wallet = new Wallet(node.privateKey);
+    var wallet = new ethers.Wallet(node.privateKey);
     console.log(wallet.address);
+    // 0xaC39b311DCEb2A4b2f5d8461c1cdaF756F4F7Ae9
 
     @TODO:
 

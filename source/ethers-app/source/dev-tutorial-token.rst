@@ -3,8 +3,7 @@
 Creating a Token
 ****************
 
-If you have not already, please make sure you have the :ref:`required software <tutorial-req-software>`
-and have :ref:`created two testnet accounts <tutorial-req-accounts>`.
+If you have not already, please make sure you have the :ref:`required software <tutorial-req-software>`.
 
 We deal with tokens all the time in our day-to-day life, such as:
 
@@ -24,297 +23,220 @@ Which are properties a blockchain-based system, like Ethereum, provides.
 
 -----
 
-Overview
-========
-
-The Ethereum network is a peer-to-peer system which runs programs called **contracts**.
-Once a contract is **deployed**, it is **running**; it has a memory location (called the
-**address**) and has live memory allocated (called **storage**), its code and state are
-available to every computer in the entire network and anyone can call any function
-on the running contract, which can read and possibly update the **storage**.
-
-There are two types of function calls:
-
-.. _call:
-
-Calls
-    These are read-only (also called **constant**). They do not update any state
-    in an application, and only need to be run on a single node in the entire
-    network to provide you the correct return value. They are **free**.
-
-.. _transaction:
-
-Transactions
-    These can change the state of the program by updating the **storage**. These
-    need to be executed on **every** node in the entire network. A transaction
-    is not **finalized** until a special type of node (called a miner) **mines** it into
-    a block, which takes on average about 15 seconds. To cover costs of the miner,
-    there is a small fee, paid in **ether**. Transactions **cannot** provide a return
-    value.
-
-*If you already have some concerns:*
-
-If anyone can call my contract's functions, how do I keep my state safe?
-    Inside the function, you can put conditions, such as ``if (onlyAllowMe()) { ... }``
-    or ``if (callerPaidMoney()) { ... }``. Like a real world contract, a
-    program is a set of rules which MUST be followed, and we can make up
-    any rules we wish to protect our functions however we need.
-
-I need to get a return value from functions with side-effects.
-    In these cases, you can wait for the state change to fully take effect
-    (which you can detect) and then read the values using constant **calls**.
-    Another advanced technique we will explore later allow you to create
-    and get notified by events (for example, when a certain value in **storage**
-    changed).
-
-Paying ether sounds expensive!
-    For now we will be using testnet ether, which is free and useful for testing.
-    In production, you will keep contract data small and state-changes minimal,
-    so usage remains cheap. Keep in mind, even on traditional services, you pay
-    monthly for servers, replication and back-ups, which you don't need on Etehreum.
-    
-
------
 
 Creating Your First Application
 ===============================
 
-Create a new directory for your application::
+**1. Download and Unzip the Demo Project**
 
-    /Users/ricmoo> mkdir my-app
-    /Users/ricmoo> cd my-app
-    /Users/ricmoo/my-app>
+    Download the `demo project <https://cdn.ethers.io/tutorials/token-demo.zip>`_ and unzip it onto your computer, then navigate to that folder inside a terminal.
 
-All Ethers projects are managed through a **git** repository, so we will create one::
+**2. Try It Out, Run Your Application Locally on the Testnet**
 
-    /User/ricmoo/my-app> git init
-    Initialized empty Git repository in /Users/ricmoo/my-app/.git/
+    The ethers-build toolchain includes the standard **Ethers container** and can serve it locally as a normal webserver with your app embedded inside it.
+    ::
 
-Create a new account to use with **ethers.space**, this will create a file **account.json**::
+    /Users/ethers/my-app> ethers-build serve --testnet
+
+**3. Browse the Application**
+
+    Now in your browser, navigate to `the local running ethers.io container. <http://localhost:8080/_/#!/app-link-insecure/localhost:8080/>`_
+
+    Play around with it a bit, to get an idea of how it works.
+
+-----
+
+Exploring
+=======================
+
+Here are the list of files downloaded from the demo project.
+
+    * **FreeTestToken.sol** - The smart contract that manages our token
+    * **deploy-token.js** - The deployment script; it compiles the contract source (FreeTestToken.sol) and deploys it (with no arguments). More complex contracts may require more complex deployment scripts
+    * **test-token.js** - The tests for the FreeTestToken contract
+    * **index.html** - The frontend HTML application
+    * **package.json** - This is a standard NPM project, so we manage dependencies and scripts using the NPM tools
+    * **ethers-app-v0.3.js** - Framework library; you shouldn't need to change this
+    * **dashboard-v0.2.*** - Demo Framework library; you shouldn't need to change this
+ 
+-----
+
+Lets Give the Test Cases a Try
+===============================
+
+Install all the node modules needed by the tests:
+
+::
+
+/Users/ethers/my-app> npm install
+
+Run the tests:
+
+::
+
+/Users/ethers/my-app> npm test
+
+This is the quickest and easiest way to change and add functionality to a
+smart contract. As you modify the smart contract, update and add test cases
+to ``test-token.js`` and then run ``npm test``. This creates a virtual
+blockchain in memory and runs your testcases against it.
+
+Lets add some debugging to the FreeTestToken contract. Update the mint function
+to the following:
+
+.. code-block:: java
+
+    function mint() returns (bool success) {
+        //! "Minting"
+        //! msg.sender
+        _balances[msg.sender] += 1;
+        _totalSupply += 1;
+        return true;
+    }
+
+And run `npm test` again. You should see some additional lines in the output:
+
+::
+
+//! Debug(line = 23, type = string):  Minting
+//! Debug(line = 24, type = address):  0xe26C5C346F45753C78c6B47e548313B0bd050B9A
+
+The test cases will automatically use a compiler which has been modified to inject debug statements into your contract. When compiled for deployment, since these are only in comments, they will be ignored.
+
+
+-----
+
+Try Out Deployment
+=====================
+
+Ethers provides a hosting service **ethers.space**, which allows small (under 5MB) applications to be deployed and hosted using the ethers-build toolchain.
+
+**1. Create a Git Repository and Add the Project Files**
+
+The ethers-build toolchain requires a git repository for managing hosted applications. This enables meaningful diffs against what is published, what is local and the contents of prepared Slugs.
+
+::
+
+    /Users/ethers/my-app> git init
+    Initialized empty Git repository in /Users/ethers/my-app/.git/
     
-    /User/ricmoo/my-app> ethers init
+    /Users/ethers/my-app> git add *.html *.js *.css
+    
+    /Users/ethers/my-app> git commit -m 'Initial code drop.'
+
+
+**2. Setup an ethers.space Account**
+
+The hosting provided by Ethers does not require any sign-up or usernames. Instead it is managed by a standard Ethereum account which signs data for uploading. Your application will be located a *address.ethers.space*. Applications sizes must be 5MB or less.
+
+::
+
+    # This command will require a password and will generate ./account.json
+    /Users/ethers/my-app> ethers-build init
     Do NOT lose or forget this password. It cannot be reset.
     New Account Password: ******
     Confirm Password: ******
     Encrypting Account... (this may take a few seconds)
-    Account successfully created. Keep this file SAFE. Do NOT check it into source control.
-
-Create your application's start page (index.html) using the default Ethers template::
-
-    /User/ricmoo/my-app> ethers dump-template > index.html
-
-To get an idea of what is going on at this point::
-
-    /Users/ricmoo/my-app> ls -a
-    .
-    ..
-    .git/
-    account.json
-    index.html
-
-Start your application locally::
-
-    /User/ricmoo/my-app> ethers serve --testnet
-    Serving content from file:///Users/ricmoo/my-app
-    Listening on port: 8080
-    Server Ethers app: http://localhost:8080/_/#!/app-link-insecure/localhost:8080/
-
-Now in your browser, open http://localhost:8080/_/#!/app-link-insecure/localhost:8080/.
-
-This is a very basic application, and it does not do much of anything yet.
-
------
-
-Importing Test Accounts
-=======================
-
-To start playing with our application, we need some accounts.
-
-Import the accounts you :ref:`created earlier on testnet.ethers.io <tutorial-req-accounts>`.
-
-@TODO: Create a slideshow to show: Import
-
-Step #1
-    Click the **Settings Gear** and select **Import JSON Wallet**.
-
-Step #2
-    Drag and drop the file onto the web application.
-
-Step #3
-    Confirm your password.        
-
------
-
-Testnet Ether Faucet
-====================
-
-Transaction on the Ethereum network cost ether, which costs real money.
-
-Fortunately, on testnet, ether is **free**, so we can use it for testing without
-having to waste real funds.
-
-The Testnet Ether Faucet is a simple application we wrote using the same system
-you are learning now. There is nothing special about it.
-
-To get some free testnet ether::
-
-@TODO: Create a slideshow to show: Testnet Faucet App
-
-Step #1
-    Click the **Testnet Faucet App** (looks like a water faucet).
-
-Step #2
-    Click the **Send Ether** button that appears in the application.
-
-Step #3
-    Repeat for both accounts.
-
------
-
-Load the Solidity IDE
-=====================
-
-The language we write **contracts** in is called **Solidity**.
-
-The Solidity IDE is also, *just another Ethers application*. There is nothing
-special about it, and if you don't like a part of it, you can copy it and
-build your own using the lessons you learn in this tutorial.
-
-@TODO: Create a slideshow to show: Solidity App
-
-Step #1
-    Click the **Solidity App** (looks like a certificate ribbon).
-
-Step #2
-    Create a **new Contract**.
-
-**IMPORTANT:**
-    There seems to be a bug/problem where source code contracts are periodically
-    flushed. Please keep copies of your solidity contracts stored somewhere safe.
+    Account successfully created. Keep this file SAFE. Do NOT check it into source control
 
 
------
+**3. Prepare Your Application**
 
-Contract
-========
-
-Our contract will be a very simple token. When it is deployed to Ethereum, the
-creator will receive 1 million tokens, which is the entire supply that will ever
-exist.
-
-Tokens can then be transfered to other people, and anyone can query the balance
-of anyone else.
-
-*Source Code* ::
-
-    contract SimpleToken {
-
-        // A mapping is like a hash table or associative array.
-        // In this case, the keys are Ethereum addresses and the
-        // values are that user's balance.
-        mapping (address => uint) _balances;
-
-        // The constructor
-        function SimpleToken() {
-
-            // The special variable msg.sender is the address of the
-            // uer calling a function
-            _balances[msg.sender] = 1000000;
-        }
-
-        function transfer(address toAddress, uint amount) returns (bool success) {
-            if (_balances[msg.sender] < amount) { return false; }
-
-            _balances[msg.sender] -= amount;
-            _balances[toAddress] += amount;
-
-            return true;
-        }
-
-        function balanceOf(address owner) constant returns (uint balance) {
-            return _balances[owner];
-        }
-    }
-
------
-
-Deploying
-=========
-
-To deploy a contract onto the Ethereum network, you make a special type of `transaction`_
-by using the contracts constuctor.
-
-Step #1
-    Copy the Solidity contract source code
-
-Step #2
-    Click the Deploy
-
-Step #3
-    Confirm the transaction    
-
-Step #4
-    Close the contract source
-
-Step #5
-    Note the address of your contract. This is the memory address that your
-    instance of the contract is running at, which you will need to refer
-    to your contract later.
-
-Step #6
-    In a new tab, open the GitHub gist for your contract. We will need the
-    **Application Binary Interface** in the next step.
-
------
-
-Connecting to the Contract
-==========================
+For deploying to **ethers.space**, your application is bundled into a single Slug file, which will be signed when uploaded (or optionally signed earlier for deferred deployments).
 
 ::
 
-    var address = ... From Step 5 Above ...
-    var abi = ... From Step 6 Above ...
+    # This command bundles up your application (tracked by git) into a Slug
+    /Users/ethers/my-app> ethers-build prepare
+    Adding:
+        dashboard-v0.2.css
+        dashboard-v0.2.js
+        deploy-token.js
+        ethers-app-v0.3.js
+        index.html
+        test-token.js
+    WARNING!
+       [ you may ignore these for now ]
 
-    var contract = ethers.getContract(address, abi);
+**4. Publish Your Application to ethers.space**
+
+::
+
+    /Users/ethers/my-app> ethers-build publish unsigned.slug
+    Account Password (./account.json): ******
+    Application URLs:
+      Testnet: https://testnet.ethers.io/#!/app-link/0xc7cc5c382e60ecc2c33ddaedfcc9601acfa1d3bd.ethers.space
+      Mainnet: https://ethers.io/#!/app-link/0xc7cc5c382e60ecc2c33ddaedfcc9601acfa1d3bd.ethers.space
+    Successfully deployed!
+
+
+Your Application is now LIVE on the internet for all to enjoy, on both the Ropsten testnet and the Ethereum mainnet at the URLs in the publish messages.
+
+-----
+
+Modifying the Contract
+=====================
+**1. Only Allow the Token Owner to Mint New Tokens**
+
+Change the ``mint()`` function to the following:
+
+.. code-block:: java
+
+    function mint() returns (bool success) {
+        require(msg.sender == _owner);
+        _balances[msg.sender] += 1;
+        _totalSupply += 1;
+        return true;
+    }
+
+**2. Get Some Testnet Ether**
+
+From the `Ethers testnet faucet <https://testnet.ethers.io/#!/app-link/0xa5681b1fbda76e0d4ab646e13460a94fdcd3c1c1.ethers.space/>`_, import your ``/account.json`` by clicking the gear in the lower-right corner.
+
+Once you have funded your account with some testnet ether, you will be able to proceed to deploy
+contracts on testnet.
+
+**3. Deploy the New Contract**
+
+::
+
+    /Users/ethers/my-app> ethers-build deploy deploy-token.js --testnet --account account.json --gas-price 100
+    Sign Transaction:
+        Network:       testnet
+        From:          0xC7cc5C382e60ecC2C33dDAEdFcc9601ACFa1d3bD
+        Gas Price:     100.0 Gwei
+        Gas Limit:     1500000
+        Value:         0.0 ether
+        Data:          1300 bytes
+    Account Password (testnet:account.json): ******
+    Deployed: FreeTestToken (./FreeTestToken.sol)
+        Transaction Hash: 0x3f6449dcc1fefb55d24d7a3f2e2ca9899f9a61f49c7d2808223348fb75a236ec
+        Contract Address: 0x972015EEC839Fe2c1e65374Cee516d68058dEd16
+        Bytecode:         0x6060604052341561000f57600080fd5b6104f68061001e6000396000f300606060405236156100a15763ffffffff7c010000000000000000000000000000000000000000000000000000000060003504166306fdde0381146100a6578063095ea7b3146101305780631249c58b1461016657806318160ddd1461017957806323b872dd1461019e578063313ce567146101c65780634e8c2927146101ef57806370a082311461020457806395d89b4114610223578063a9059cbb14610236575b600080fd5b34156100b157600080fd5b6100b9610258565b60405160208082528190810183818151815260200191508051906020019080838360005b838110156100f55780820151838201526020016100dd565b50505050905090810190601f1680156101225780820380516001836020036101000a031916815260200191505b509250505060405180910390f35b341561013b57600080fd5b610152600160a060020a036004351660243561028f565b604051901515815260200160405180910390f35b341561017157600080fd5b6101526102c0565b341561018457600080fd5b61018c6102ec565b60405190815260200160405180910390f35b34156101a957600080fd5b610152600160a060020a03600435811690602435166044356102f2565b34156101d157600080fd5b6101d96103c6565b60405160ff909116815260200160405180910390f35b34156101fa57600080fd5b6102026103cb565b005b341561020f57600080fd5b61018c600160a060020a03600435166103f5565b341561022e57600080fd5b6100b9610410565b341561024157600080fd5b610152600160a060020a0360043516602435610447565b60408051908101604052600f81527f46726565205465737420546f6b656e0000000000000000000000000000000000602082015281565b600160a060020a03338116600090815260026020908152604080832093861683529290522081905560015b92915050565b600160a060020a0333166000908152600160208190526040909120805482019055600380548201905590565b60035490565b600160a060020a0383166000908152600160205260408120548290108061033f5750600160a060020a03808516600090815260026020908152604080832033909416835292905220548290105b806103645750600160a060020a03831660009081526001602052604090205482018290105b15610371575060006103bf565b50600160a060020a0380841660009081526001602081815260408084208054879003905560028252808420338616855282528084208054879003905593861683528190529190208054830190555b9392505050565b600081565b6000805473ffffffffffffffffffffffffffffffffffffffff191633600160a060020a0316179055565b600160a060020a031660009081526001602052604090205490565b60408051908101604052600381527f4654540000000000000000000000000000000000000000000000000000000000602082015281565b600160a060020a033316600090815260016020526040812054829010806104885750600160a060020a03831660009081526001602052604090205482018290105b15610495575060006102ba565b50600160a060020a033381166000908152600160205260408082208054859003905591841681529081208054830190556102ba5600a165627a7a72305820cc7edc339980de5f0caad583721aaa317fb9714e31ffb407dacc44532feccff40029
+        Arguments:        0x
+        Interface:        [{"constant":true,"inputs":[],"name":"name","outputs":[{"name":"","type":"string"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"name":"spender","type":"address"},{"name":"amount","type":"uint256"}],"name":"approve","outputs":[{"name":"success","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[],"name":"mint","outputs":[{"name":"success","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[],"name":"totalSupply","outputs":[{"name":"totalSupply","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"name":"from","type":"address"},{"name":"to","type":"address"},{"name":"amount","type":"uint256"}],"name":"transferFrom","outputs":[{"name":"success","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[],"name":"decimals","outputs":[{"name":"","type":"uint8"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[],"name":"FreeToken","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[{"name":"addr","type":"address"}],"name":"balanceOf","outputs":[{"name":"balance","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"symbol","outputs":[{"name":"","type":"string"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"name":"to","type":"address"},{"name":"amount","type":"uint256"}],"name":"transfer","outputs":[{"name":"success","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"}]
     
-    var dashboard = new Dashboard('dashboard');
-    var panel;
 
-    panel = dashboard.addPanel('Query Balance');
-    panel.addAddressEntry('Address', 'address');
-    panel.addButton('Lookup', function(values) {
-        var balancePromise = contract.balanceOf(values.address);
+**4. Update the Application Frontend**
 
-        balancePromise.then(function(result) {
-            alert('The balance is: ' + result.balance);
-        });
-    });
+Modify the ``index.html`` where we specify and update the contract address to the new address from the above deployment. (e.g. ``0x972015EEC839Fe2c1e65374Cee516d68058dEd16``)
 
-    panel = dashboard.addPanel('Transfer');
-    panel.addAddressEntry('To Address', 'address');
-    panel.addTextEntry('Amount', 'amount');
-    panel.addButton('Transfer', function(values) {
-        var transferPromise = contract.transfer(values.address, values.amount);
-        
-        transferPromise.then(function(transaction) {
-            console.log(transfer);
-            if (transaction) {
-                alert('Transaction sent!');
-            } else {
-                alert('Transaction cancelled!');
-            }
-        });
-    });
 
-Now refresh your application in your browser.
+.. code-block:: javascript
 
-You should be able to move tokens back and forth between accounts.
+    <script type="text/javascript">
+       var address = '0x972015EEC839Fe2c1e65374Cee516d68058dEd16';
+
+**5. Refresh your Application**
+
+If you refresh your application in your web browser, you should now be running the latest contract, in which only the owner account (the ``./account.json``) may mint new tokens.
+
+You may use the Ethers import feature to import the account.json into your browser by clicking the gear in the lower-right hand corner of the ethers.io website.
+
 
 -----
 
 Exercises
 =========
 
-- Add an option to mint new tokens
-- Place caps on how many tokens a single account may have
-- @TODO: Add more here, along with example solutions
+- Remove mint entirely and have the constructor create a fixed total supply, allocated to the owner
