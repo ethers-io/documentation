@@ -18,13 +18,13 @@ git
     complete history tracking, which makes it easy to undo mistakes and see
     what has changed from one time to another.
 
-    See: `Installing Git <install-git>`_
+    See: `Installing Git <https://git-scm.com/book/en/v2/Getting-Started-Installing-Git>`_
     
 node.js
     Node.js (and npm, which comes with it) is a JavaScript interpreter and package
     management, which many of the Ethers tools are built in and managed by.
 
-    See: `Installing node.js and npm <install-node>`_
+    See: `Installing node.js and npm <https://docs.npmjs.com/getting-started/installing-node>`_
 
 ethers-cli
     The Ethers CLI (Command Line Interface) is a package of tools to simplify
@@ -87,7 +87,4 @@ and award to people.
 
 :ref:`Begin Tutorial <tutorial-token>`
 
------
 
-.. _install-node: https://docs.npmjs.com/getting-started/installing-node
-.. _install-git: https://git-scm.com/book/en/v2/Getting-Started-Installing-Git

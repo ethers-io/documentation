@@ -1,28 +1,32 @@
-What is ethers.io?
-******************
+What is Ethers?
+***************
 
-The **ethers.io** system is a collection of HTML, JavaScript, CSS and server-side
-components which aim to simplify development, deployment and sharing of **Ethereum**
+Ethers is an collection of Libraries, Web Tools, Command-Line Utilities and Server
+Components to assist in the development, deployment, hosting and sharing of Ethereum
 applications.
 
-The **ethers.io** system can be accessed from our own shared instance at `ethers.io`_
-(or `testnet.ethers.io`_) or you can deploy your own full-stack on your own servers
-(instructions for this will be coming soon).
+
+`Ethers Wallet Container`_ is an Ethereum Wallet and dApp browser which securely
+keeps Ethereum private keys stored and managed entirely client-side, while allowing
+arbitrary dApps to interact with it from a sandboxed environment. The Ethers Wallet
+Container does not require any plug-in, supports all modern browsers and enables
+sharing and bookmarking dApps as standard URLs.
+
+The **Ethers App Library** is JavaScript library allows developers to easily add support for
+dApps by detecting which Ethereum container is available and setting up both, a
+Web3 instance and the Ethers API. Supports any injected Web3 environment (`MetaMask`_,
+`Mist`_, `Ethers Wallet`_, `Cipher Browser`_, etc.) the Ethers Wallet Container and if
+no signing container is found, will create a read-only connection to the Ethereum network.
 
 The code is open source under the `MIT license`_ and `available on GitHub`_.
 
-.. _ethers.io: https://ethers.io/
-.. _testnet.ethers.io: https://testnet.ethers.io/
+.. _Ethers Wallet Container: https://ethers.io/
 .. _MIT License: https://en.wikipedia.org/wiki/MIT_License
-.. _available on GitHub: https://github.com/ethers-io/ethers-io/
-
-
-This documentation is split up into two main sections:
-
-* :ref:`user-documentation`
-* :ref:`developer-documentation`
-
-.. _developer-documentation:
+.. _available on GitHub: https://github.com/ethers-io/ethers.io
+.. _MetaMask: https://metamask.io
+.. _Mist: https://github.com/ethereum/mist/releases/
+.. _Ethers Wallet: https://itunes.apple.com/us/app/ethers-wallet/id1186052971?mt=8 
+.. _Cipher Browser: https://www.cipherbrowser.com 
 
 .. toctree::
    :maxdepth: 3
@@ -35,11 +39,4 @@ This documentation is split up into two main sections:
    dev-security-concerns
    dev-misc
 
-
-Indices and tables
-==================
-
-* :ref:`genindex`
-* :ref:`modindex`
-* :ref:`search`
-
+.. EOF

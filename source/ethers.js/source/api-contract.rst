@@ -98,30 +98,29 @@ Examples
     /**
      *  contract SimpleStore {
      *
-     *      event valueChanged(address author, string value);
+     *      event valueChanged(string oldValue, string newValue);
      *
-     *      address _author;
      *      string _value;
      *
-     *      function setValue(string value) {
-     *          _author = msg.sender;
+     *      function setValue(string value) public {
+     *          valueChanged(_value, value);
      *          _value = value;
-     *          valueChanged(msg.sender, value);
      *      }
      *
-     *      function getValue() constant returns (address author, string value) {
-     *          return (_author, _value);
+     *      function getValue() constant public returns (string value) {
+     *          return _value;
      *      }
      *  }
      */
 
      // The interface from the Solidity compiler
+     var ethers = require('ethers');
      var abi = [
          {
              "constant":true,
              "inputs":[],
              "name":"getValue",
-             "outputs":[{"name":"author","type":"address"},{"name":"value","type":"string"}],
+             "outputs":[{"name":"value","type":"string"}],
              "payable":false,
              "type":"function"
          },
@@ -136,16 +135,16 @@ Examples
          {
              "anonymous":false,
              "inputs":[
-                 {"indexed":false,"name":"author","type":"address"},
-                 {"indexed":false,"name":"value","type":"string"}
+                 {"indexed":false,"name":"oldValue","type":"string"},
+                 {"indexed":false,"name":"newValue","type":"string"}
              ],
              "name":"valueChanged",
              "type":"event"
          }
      ];
 
-     var address = "";
-     var provider = ethers.providers.getDefaultProvider();
+     var address = '0x2BA27534A8814765795f1Db8AEa01d5dbe4112d9';
+     var provider = ethers.providers.getDefaultProvider('ropsten');
 
      var contract = new ethers.Contract(address, abi, provider);
 
@@ -159,12 +158,8 @@ Examples
          // Solidity return tuples, which can be accessed by their
          // position or by their name.
 
-         // The first entry of the return result (author)
+         // The first entry of the return result (value)
          console.log('Positional argument (0):' + result[0]);
-         console.log('Named argument (author): ' + result.author);
-
-         // The second entry of the return result (value)
-         console.log('Positional argument (1):' + result[1]);
          console.log('Named argument (value): ' + result.value);
      });
 
@@ -173,6 +168,14 @@ Examples
 
 
 *Example Non-Constant Function* -- **setValue ( string value )** ::
+
+     // to call a non-constant function, the contract needs to be 
+     // initialized with a wallet or a customSigner
+     var provider = ethers.providers.getDefaultProvider('ropsten');
+     var address = '0x2BA27534A8814765795f1Db8AEa01d5dbe4112d9';
+     var privateKey = '0x0123456789012345678901234567890123456789012345678901234567890123';
+     var wallet = new ethers.Wallet(privateKey, provider);
+     var contract = new ethers.Contract(address, abi, wallet); 
 
      var sendPromise = contract.setValue("Hello World");
 
@@ -198,9 +201,9 @@ Examples
 *Example Event Registration* -- **valueChanged ( author , value )** ::
 
      // Register for events
-     contract.onvaluechanged = function(author, value) {
-         console.log('Author: ' + author);
-         console.log('Value: ' + value);
+     contract.onvaluechanged = function(oldValue, newValue) {
+         console.log('oldValue: ' + oldValue);
+         console.log('newValue: ' + newValue);
      };
 
      // This is identical to the above event registry
@@ -208,6 +211,13 @@ Examples
 
 
 *Example Non-Constant Gas Estimate* ::
+
+     // to get the gas estimate, the contract needs to be 
+     // initialized with a wallet or a customSigner
+     var provider = ethers.providers.getDefaultProvider('ropsten');
+     var privateKey = '0x0123456789012345678901234567890123456789012345678901234567890123';
+     var wallet = new ethers.Wallet(privateKey, provider);
+     var contract = new ethers.Contract(address, abi, wallet); 
 
      var estimatePromise = contract.estimate.setValue("Hello World");
 
@@ -253,16 +263,17 @@ Strings
 Strings work fine and require no special care.
 
 To convert between strings and bytes, which may occasionally come up, use the
-`utils.toUtf8Bytes()` and `utils.toUtf8String()` utility functions.
+:ref:`utils.toUtf8Bytes() <api-utf8-strings>` and :ref:`utils.toUtf8String() <api-utf8-strings>`
+utility functions.
 
 Bytes
 -----
 
 Bytes are available in fixed-length or dynamic-length variants. In both cases, the
 values are returned as a hex string and may be passed in as either a hex string or
-as an arrayish.
+as an :ref:`arrayish <api-arrayish>`.
 
-To convert the string into an array, use the `utils.arrayify()` utility function.
+To convert the string into an array, use the :ref:`utils.arrayify() <api-arrayish>` utility function.
 
 Arrays
 ------
@@ -300,6 +311,8 @@ Solidity compiler.
      *  }
      */
 
+    var ethers = require('ethers');
+
     // The interface from Solidity
     var abi = '[{"inputs":[{"name":"value","type":"string"}],"type":"constructor"}]';
 
@@ -316,7 +329,7 @@ Solidity compiler.
                      "d8e037c72cd7d0aa671e2f0029";
 
     // Notice we pass in "Hello World" as the parameter to the constructor
-    var deployTransaction = Contract.getDeployTransaction(bytecode, abi, "Hello World");
+    var deployTransaction = ethers.Contract.getDeployTransaction(bytecode, abi, "Hello World");
     console.log(deployTransaction);
     // {
     //    data: "0x6060604052341561000c57fe5b60405161012d38038061012d83398101604052" +

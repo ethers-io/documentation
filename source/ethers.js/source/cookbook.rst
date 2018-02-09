@@ -13,29 +13,24 @@ If there is a simple recipe you would like added, please send suggestions to sup
 Dump All JSON Wallet Balances (in current directory)
 ====================================================
 
-The directory your JSON wallets are located in will depend on the Ethereum
-node you are using.
-
-Geth
-    ~/.ethereum/keystore
-
-Parity
-    ~/.parity/keys/\ *chainDirectory*\ /keys
-
-*Source Code*
--------------
-
 ::
 
     var fs = require('fs');
+    var path = require('path');
 
     var ethers = require('ethers');
-    var provider = ethers.providers.defaultProvider();
+    var provider = ethers.providers.getDefaultProvider();
 
-    var filenames = fs.readDirSync('.');
+    // Geth
+    var dirname = path.join(process.env.HOME, '.ethereum', 'keystore');
+
+    // Parity (use the name of your chain for chainDirectory, such as "homestead")
+    //var dirname = path.join(process.env.HOME, '.parity', 'keys', chainDirectory, 'keys');
+
+    var filenames = fs.readdirSync(dirname);
 
     filenames.forEach(function(filename) {
-        fs.readFile(filename, function(error, data) {
+        fs.readFile(path.join(dirname,filename), function(error, data) {
             if (error) {
                 console.log('Error reading file: ' + error.message);
                 return;
@@ -43,7 +38,7 @@ Parity
 
             var address = JSON.parse(data.toString()).address;
             provider.getBalance(address).then(function(balance) {
-                console.log(address + ':' + ethers.formatEther(balance));
+                console.log(address + ':' + ethers.utils.formatEther(balance));
             });
         });
     });
@@ -53,11 +48,6 @@ Parity
 
 Empty One Account into Another
 ==============================
-
-Include example links to etherscan showing the transactions
-
-*Source Code*
--------------
 
 ::
 
@@ -98,13 +88,7 @@ Include example links to etherscan showing the transactions
 Transactions Confirm UI (with a Custom Signer)
 ==============================================
 
-
-*Source Code*
--------------
-
 ::
-
-    var ethers = require('ethers');
 
     function CustomSigner(privateKey) {
 
@@ -149,9 +133,6 @@ Transactions Confirm UI (with a Custom Signer)
 
 Break Apart r, s and recoveryParam from a Message Signature
 ===========================================================
-
-*Source Code*
--------------
 
 ::
 
@@ -205,7 +186,8 @@ This also results in paying multiple transaction fees (1 fee per account to merg
 
     var provider = ethers.providers.getDefaultProvider();
 
-    var hdnode = ethers.HDNode.fromMnemonic();
+    var mnemonic = "radar blur cabbage chef fix engine embark joy scheme fiction master release";
+    var hdnode = ethers.HDNode.fromMnemonic(mnemonic);
     hdnode = hdnode.derivePath("m/44'/60'/0'/0");
 
     @TODO:
@@ -231,13 +213,13 @@ Access Funds in a Mnemonic Phrase Wallet
         // @TODO: Include some non-standard wallet paths
     };
 
-    var mnemonic = "";
-
+    var mnemonic = "radar blur cabbage chef fix engine embark joy scheme fiction master release";
     var hdnode = ethers.HDNode.fromMnemonic(mnemonic);
     var node = hdnode.derivePath(walletPath.standard);
 
-    var wallet = new Wallet(node.privateKey);
+    var wallet = new ethers.Wallet(node.privateKey);
     console.log(wallet.address);
+    // 0xaC39b311DCEb2A4b2f5d8461c1cdaF756F4F7Ae9
 
     @TODO:
 
@@ -256,9 +238,6 @@ before returning them to the user.
 
 For this example, we will build a DebugProvider, which will simple proxy all commands
 through to INFURA, but dump all data going back and forth.
-
-*Source Code*
--------------
 
 ::
 

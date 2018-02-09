@@ -17,6 +17,8 @@ Notifications
 *Examples*
 ----------
 
+::
+
     ethers.notify("Hello World");
 
 -----

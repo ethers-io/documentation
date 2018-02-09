@@ -73,8 +73,8 @@ for calling functions and watching for events.
 Connecting to a Contract
 ------------------------
 
-:sup:`ethers` . getContract ( contractAddress , contractInterface )
-    Returns a new connection to a contract at *contractAddress* with the
+:sup:`ethers` . getContract ( contractAddressOrName , contractInterface )
+    Returns a new connection to a contract at *contractAddressOrName* with the
     *contractInterface*.
 
 

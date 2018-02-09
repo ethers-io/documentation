@@ -44,30 +44,44 @@ Usage
 
 ::
 
-    /Users/ricmoo> ethers --help
+    /Users/ricmoo> ethers-build --help
 
-    Command Line Interface - ethers/0.0.2
+    Command Line Interface - ethers/2.0.0
 
-    Usage:
-        ethers init
-        ethers status [--head] [--slug SLUG1] [--slug SLUG2] [--published]
-        ethers diff [--head] [--slug SLUG1] [--slug SLUG2] [--published]
-        ethers prepare [--signed]
-        ethers serve [--slug SLUG] [--port PORT] [--testnet]
-        ethers push --slug SLUG
+    ethers-build compile FILENAME [ Compiler Options ] [ --optimize ]
 
-        Options:
-            --help            show this help screen
-            --version         show the software version
-            --testnet         use the morden testnet
+    ethers-build deploy FILENAME.js [ Node + Account + Tx Options ]
+    ethers-build deploy FILENAME.sol [ Node + Account + Tx Options ]
 
-        Commands:
-            init       creates a new account.json
-            status     show status of package
-            prepare    create a pre-packaged slug
-            serve      locally host the app and browser
-            push       deploys a slug to ethers.space
-    
+    ethers-build serve [ --slug SLUG ] [ --port PORT ] [ Node Options ]
+    ethers-build init
+    ethers-build status [ --head ] [ --slug A ] [ --slug B ] [ --published ]
+    ethers-build diff [ --head ] [ --slug A ] [ --slug B ] [ --published ]
+    ethers-build prepare [ --signed ]
+    ethers-build publish --slug SLUG
+
+    Compile Options
+      --bytecode            Only output bytecode
+      --interface           Only output the JSON interface
+      --solc                Output the entire solc output
+      --optimize            Run the optimizer
+
+    Node Options
+      --testnet             Use testnet configuration
+      --rpc URL             Use the Ethereum node at URL
+
+    Account Options
+      --account FILENAME    Use the JSON wallet
+
+    Transaction Options
+      --gas-price GWEI      Override the gas price
+      --gas-limit LIMIT     Override the gas limit
+      --nonce NONCE         Override the nonce (.sol only)
+      --value ETHER         Send ether (.sol only)
+
+    Options
+      --help                Show this help
+      --version             Show the version
 
 -----
 
@@ -94,7 +108,7 @@ You also need to create a git repository to manage an application.
     Initialized empty Git repository in /Users/ricmoo/my-app/.git/
     
     # Create your ethers account.json
-    /Users/ricmoo> ethers init
+    /Users/ricmoo> ethers-build init
     Do NOT lose or forget this password. It cannot be reset.
     New Account Password: ******
     Confirm Password: ******
@@ -124,7 +138,7 @@ is assumed).
 
 *Example:* ::
 
-    /Users/ricmoo/my-app> ethers status
+    /Users/ricmoo/my-app> ethers-build status
     Address: 0xa5681b1fbDA76E0d4aB646E13460a94fDcD3c1C1
     URL:     https://0xa5681b1fbda76e0d4ab646e13460a94fdcd3c1c1.ethers.space
     No files changed.
@@ -152,10 +166,10 @@ is assumed).
 *Example:* ::
 
     # Compare the contents of unsigned.slug to the live files
-    /Users/ricmoo/my-app> ethers diff --slug unsigned.slug
+    /Users/ricmoo/my-app> ethers-build diff --slug unsigned.slug
 
     # Compare the contents of unsigned.slug to the production files
-    /Users/ricmoo/my-app> ethers diff --slug unsigned.slug --published
+    /Users/ricmoo/my-app> ethers-build diff --slug unsigned.slug --published
 
 
 -----
@@ -174,11 +188,11 @@ If you leave a slug unsigned, it can be signed during the `push`_ step.
 
 *Example:* ::
 
-    /Users/ricmoo/my-app> ethers prepare
+    /Users/ricmoo/my-app> ethers-build prepare
     Adding:
         index.html
 
-    /Users/ricmoo/my-app> ethers prepare --signed
+    /Users/ricmoo/my-app> ethers-build prepare --signed
     Account Password: ************
     Adding:
         index.html
@@ -206,7 +220,7 @@ production. Make sure all external resources will be fetched over HTTPS.
 
 *Example:* ::
 
-    /Users/ricmoo/my-app> ethers serve --testnet
+    /Users/ricmoo/my-app> ethers-build serve --testnet
     Serving content from file:///Users/ricmoo/my-app
     Listening on port: 8080
     Server Ethers app: http://localhost:8080/_/#!/app-link-insecure/localhost:8080/
@@ -230,12 +244,12 @@ of your production environment using `status`_.
 *Example:* ::
 
     # Deploy an unsigned slug
-    /Users/ricmoo/my-app> ethers push --slug unsigned.slug
+    /Users/ricmoo/my-app> ethers-build push --slug unsigned.slug
     Account Password: ******
     Successfully deployed!
 
     # Deploy a signed slug
-    /Users/ricmoo/my-app> ethers push --slug 0xBb20dc4D5335BF696E0Bf750bdB3E9eCf96d3B02.slug
+    /Users/ricmoo/my-app> ethers-build push --slug 0xBb20dc4D5335BF696E0Bf750bdB3E9eCf96d3B02.slug
     Successfully deployed!
 
 Note:

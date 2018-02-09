@@ -1,3 +1,5 @@
+.. _api-wallet:
+
 Wallet API
 **********
 
@@ -142,6 +144,10 @@ Events
     such as when the user explicitly selects a different account or when
     they have created their first account.
 
+:sup:`ethers` . onaready
+    This event callback is triggered once the underlying Ethereum provider
+    and signer has been determined and connected.
+
 *Examples*
 ----------
 
@@ -149,6 +155,10 @@ Events
 
     ethers.onaccount = function(address) {
         console.log('The user has switched to account: ' + address);
+    }
+
+    ethers.onready = function() {
+        startApp();
     }
 
 -----
