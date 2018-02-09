@@ -134,6 +134,21 @@ Ether Strings and Wei
     *options* object supports the keys ``commify`` and ``pad``. The output will always
     include at least one whole number and at least one decimal place.
 
+.. _parseUnits:
+
+:sup:`utils` . parseUnits ( valueString , decimalsOrUnitName )
+    Parse the *valueString* representation of units into a BigNumber instance
+    of the amount of wei. The *decimalsOrUnitsName* may be a number of decimals between
+    3 and 18 (multiple of 3) or a name, such as `gwei`.
+
+.. _formatUnits:
+
+:sup:`utils` . formatUnits ( wei , decimalsOrUnitName [ , options ] )
+    Format an amount of *wei* into a decimal string representing the amount of units. The
+    *options* object supports the keys ``commify`` and ``pad``. The output will always
+    include at least one whole number and at least one decimal place. The *decimalsOrUnitsName*
+    may be a number of decimals between 3 and 18 (multiple of 3) or a name, such as `gwei`.
+
 
 *Examples*
 ----------
@@ -202,12 +217,17 @@ addresses, and it is often useful to be able to convert between them.
 
 -----
 
+.. _api-utf8-strings:
 
 UTF-8 Strings
 =============
 
+.. _api-utf8-to-bytes:
+
 :sup:`utils` . toUtf8Bytes ( string )
     Converts a UTF-8 string to a Uint8Array.
+
+.. _api-utf8-to-string:
 
 :sup:`utils` . toUtf8String ( hexStringOrArrayish )
     Converts a hex-encoded string or array to its UTF-8 representation.
@@ -234,6 +254,8 @@ UTF-8 Strings
 
 -----
 
+.. _api-utils-crypto:
+
 Cryptographic Functions
 =======================
 
@@ -249,7 +271,6 @@ Cryptographic Functions
 
 :sup:`utils` . randomBytes ( length )
     Return a Uint8Array of cryptographically secure random bytes
-
 
 *Examples*
 ----------

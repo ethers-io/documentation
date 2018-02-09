@@ -47,7 +47,7 @@ Creating Your First Application
 -----
 
 Exploring
-=======================
+=========
 
 Here are the list of files downloaded from the demo project.
 
@@ -62,7 +62,7 @@ Here are the list of files downloaded from the demo project.
 -----
 
 Lets Give the Test Cases a Try
-===============================
+==============================
 
 Install all the node modules needed by the tests:
 
@@ -107,7 +107,7 @@ The test cases will automatically use a compiler which has been modified to inje
 -----
 
 Try Out Deployment
-=====================
+==================
 
 Ethers provides a hosting service **ethers.space**, which allows small (under 5MB) applications to be deployed and hosted using the ethers-build toolchain.
 
@@ -175,7 +175,7 @@ Your Application is now LIVE on the internet for all to enjoy, on both the Ropst
 -----
 
 Modifying the Contract
-=====================
+======================
 **1. Only Allow the Token Owner to Mint New Tokens**
 
 Change the ``mint()`` function to the following:

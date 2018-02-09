@@ -13,18 +13,6 @@ If there is a simple recipe you would like added, please send suggestions to sup
 Dump All JSON Wallet Balances (in current directory)
 ====================================================
 
-The directory your JSON wallets are located in will depend on the Ethereum
-node you are using.
-
-Geth
-    ~/.ethereum/keystore
-
-Parity
-    ~/.parity/keys/\ *chainDirectory*\ /keys
-
-*Source Code*
--------------
-
 ::
 
     var fs = require('fs');
@@ -33,7 +21,12 @@ Parity
     var ethers = require('ethers');
     var provider = ethers.providers.getDefaultProvider();
 
+    // Geth
     var dirname = path.join(process.env.HOME, '.ethereum', 'keystore');
+
+    // Parity (use the name of your chain for chainDirectory, such as "homestead")
+    //var dirname = path.join(process.env.HOME, '.parity', 'keys', chainDirectory, 'keys');
+
     var filenames = fs.readdirSync(dirname);
 
     filenames.forEach(function(filename) {
@@ -55,11 +48,6 @@ Parity
 
 Empty One Account into Another
 ==============================
-
-Include example links to etherscan showing the transactions
-
-*Source Code*
--------------
 
 ::
 
@@ -99,10 +87,6 @@ Include example links to etherscan showing the transactions
 
 Transactions Confirm UI (with a Custom Signer)
 ==============================================
-
-
-*Source Code*
--------------
 
 ::
 
@@ -149,9 +133,6 @@ Transactions Confirm UI (with a Custom Signer)
 
 Break Apart r, s and recoveryParam from a Message Signature
 ===========================================================
-
-*Source Code*
--------------
 
 ::
 
@@ -257,9 +238,6 @@ before returning them to the user.
 
 For this example, we will build a DebugProvider, which will simple proxy all commands
 through to INFURA, but dump all data going back and forth.
-
-*Source Code*
--------------
 
 ::
 

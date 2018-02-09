@@ -20,7 +20,7 @@ Accounts
 :sup:`ethers.blockchain` . getTransactionCount ( address [ , blockNumber ] )
     Returns a `Promise`_ with the number of transactions *address* has
     ever sent at *blockTag*. This is the value required for the **nonce**
-    in a transaction; both the `Contracts API`_ and `Wallet API`_ 
+    in a transaction; both the :ref:`Contracts API <api-contract>` and :ref:`Wallet API <api-wallet>` 
     automatically populate this.
 
     **default:** *blockTag*\ =latest
@@ -71,7 +71,7 @@ Blockchain State
 :sup:`ethers.blockchain` . getTransaction ( transactionHash )
     Return a `Promise`_ with the transaction details of *transactionHash*.
 
-:sup:`ethers.blockchain` . getTransactionReceipt ( hash )
+:sup:`ethers.blockchain` . getTransactionReceipt ( transactionHash )
     Return a `Promise`_ with the transaction receipt of *hash*. A
     transaction receipt includes information about a mined transaction,
     such as actualy gas costs.

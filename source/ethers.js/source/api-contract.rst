@@ -263,16 +263,17 @@ Strings
 Strings work fine and require no special care.
 
 To convert between strings and bytes, which may occasionally come up, use the
-`utils.toUtf8Bytes()` and `utils.toUtf8String()` utility functions.
+:ref:`utils.toUtf8Bytes() <api-utf8-strings>` and :ref:`utils.toUtf8String() <api-utf8-strings>`
+utility functions.
 
 Bytes
 -----
 
 Bytes are available in fixed-length or dynamic-length variants. In both cases, the
 values are returned as a hex string and may be passed in as either a hex string or
-as an arrayish.
+as an :ref:`arrayish <api-arrayish>`.
 
-To convert the string into an array, use the `utils.arrayify()` utility function.
+To convert the string into an array, use the :ref:`utils.arrayify() <api-arrayish>` utility function.
 
 Arrays
 ------

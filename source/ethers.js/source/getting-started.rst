@@ -27,7 +27,9 @@ the application's server, but for a quick prototype using the Ethers CDN (conten
 distribution network) should suffice::
 
     <!-- This exposes the library as a global variable: ethers -->
-    <script src="https://cdn.ethers.io/scripts/ethers-v2.0.min.js" type="text/javascript">
+    <script src="https://cdn.ethers.io/scripts/ethers-v2.min.js"
+            charset="utf-8"
+            type="text/javascript">
     </script>
 
 

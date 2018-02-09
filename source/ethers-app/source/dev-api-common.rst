@@ -90,6 +90,15 @@ Example::
     var binaryHelloWorld = '0x48656c6c6f576f726c64';
     var thirtySeven = '0x25';
 
+     ethers.utils.arrayify(binaryHelloWorld);
+    // Uint8Array [ 72, 101, 108, 108, 111, 87, 111, 114, 108, 100 ]
+
+    ethers.utils.hexlify([12, 34, 56]);
+    // '0x0c2238'
+
+    ethers.utils.hexlify(37);
+    // '0x25'
+
 
 Errors
 ======
