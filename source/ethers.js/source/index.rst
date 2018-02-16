@@ -9,7 +9,7 @@ What is ethers.js
 
 This library (which was made for and used by ethers.io) is designed to make it
 easier to write client-side JavaScript based wallets, keeping the private key on
-the owners machine at all times.
+the owner's machine at all times.
 
 .. toctree::
    :maxdepth: 3

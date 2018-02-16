@@ -4,7 +4,7 @@ Common Types
 There are several parameter formats and types that come up often:
 
 - Addresses_ -- Ethereum Accounts and Contracts all have an address, which is needed to interact with them
-- `Big Numbers`_ (BN.js) -- Precise numbers to work around JavaScripts lossy floating point system
+- `Big Numbers`_ (BN.js) -- Precise numbers to work around JavaScript's lossy floating point system
 - `Hex Strings`_ -- Strings of hexidecimal encoded binary data and numbers
 - `Errors` -- An error indicating the user (explicitly or implicitly) cancelled an operation
 
@@ -14,7 +14,7 @@ There are several parameter formats and types that come up often:
 Addresses
 =========
 
-Addresses come in many formats, but all blach...
+Addresses come in many formats, and any may be used.
 
 - Hex Strings (eg. 0x1234567890abcdef1234567890abcdef12345678)
 - ICAP Addresses  (eg. XE0724JX5HRQ9R1XA24VWJM008DMOB17YBC)
@@ -42,8 +42,8 @@ To convert between the various formats::
 Big Numbers
 ===========
 
-Since **Ethereum** deals a great deal with large numberic values (far larger
-than JavaScript can handle without `loss of precission`_), many calls require and return instances
+Since **Ethereum** deals a great deal with large numeric values (far larger
+than JavaScript can handle without `loss of precision`_), many calls require and return instances
 of **BN.js**, which can be accessed at ``ethers.utils.BN``.
 
 Some common things you will likely want to do with **BN.js**::
@@ -61,8 +61,8 @@ Some common things you will likely want to do with **BN.js**::
     var value = ethers.utils.bigNumberify('1000000');
 
     // Convert from a hex string (the 0x prefex is REQUIRED)
-    var value = ethers.utils.bigNumberify('0xf4240');    
-    
+    var value = ethers.utils.bigNumberify('0xf4240');
+
     // Multiple two values
     var product = value1.mul(value2)
 
@@ -71,7 +71,7 @@ Some common things you will likely want to do with **BN.js**::
 
     // Convert from wei to ether (string)
     var ether = ethers.formatEther(wei)
-    
+
 
 .. _hex-strings:
 
@@ -83,7 +83,7 @@ string. Functions which require big numbers can also be passed the
 hex string equivalent.
 
 It is important to note, it **MUST** be a string, and it **MUST** begin with
-the prefix ``0x``. 
+the prefix ``0x``.
 
 Example::
 
@@ -147,7 +147,7 @@ Example::
 
 .. _Promise: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise
 
-.. _loss of precission: http://docs.oracle.com/cd/E19957-01/806-3568/ncg_goldberg.html
+.. _loss of precision: http://docs.oracle.com/cd/E19957-01/806-3568/ncg_goldberg.html
 
 .. _BN.js on GitHub: https://github.com/indutny/bn.js
 

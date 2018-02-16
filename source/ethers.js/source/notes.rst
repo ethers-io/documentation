@@ -21,7 +21,7 @@ numeric values. As a result, there are *holes* in the integer set after
 9,007,199,254,740,991; which is problematic for *Ethereum* because that is only
 around 0.009 ether (in wei).
 
-To demonstrate how this may be an issue in your code, cosider::
+To demonstrate how this may be an issue in your code, consider::
 
     > (Number.MAX_SAFE_INTEGER + 4 - 5) == (Number.MAX_SAFE_INTEGER - 1)
     false
@@ -32,7 +32,7 @@ as :ref:`Big Numbers <bignumber>`.
 
 The functions :ref:`parseEther( etherString ) <parseEther>` and :ref:`formatEther( wei ) <formatEther>` can be used to convert between
 string representations, which are displayed to or entered by the user and Big Number representations
-which can have mathematical operations handeled safely.
+which can have mathematical operations handled safely.
 
 -----
 

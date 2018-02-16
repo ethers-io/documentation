@@ -21,7 +21,7 @@ Accounts
 ::
 
     var accountPromise = ethers.getAccount();
-    
+
     accountPromise.then(function(address) {
         if (!address) {
             console.log('No accounts.');
@@ -63,7 +63,7 @@ Transactions
 Attempting to send a transaction will relinquish control of the application
 to the Ethers container, which will then prompt the user to accept or decline
 the transaction. If accepted, the container will sign and broadcast the
-transaction to the network. The application is then given backcontrol.
+transaction to the network. The application is then given back control.
 
 :sup:`ethers` . send ( address [ , amountWei ] )
     Prompts the user to confirm sending *amountWei* to *address*.
@@ -81,7 +81,7 @@ transaction to the network. The application is then given backcontrol.
     Returns a `Promise`_ with the transaction sent to the network by the
     container, or rejects with a **cancelled** error if the transaction was
     declined by the user.
-    
+
     For the most part, this method should not be necessary. The `Contracts API`
     will automatically construct and send transactions with this.
 
