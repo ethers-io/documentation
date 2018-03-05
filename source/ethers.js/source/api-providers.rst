@@ -14,42 +14,40 @@ To manage state changing operations, you must use a :ref:`Wallet <api-wallet>`
 to sign transactions. If you pass a wallet in as a signer to
 a :ref:`Contract <api-contract>`, this is managed for you by the contract.
 
-::
-
-    var providers = require('ethers').providers;
 
 -----
+
 
 Connecting to Ethereum
 ======================
 
 There are several ways to connect to the Ethereum blockchain:
 
-new :sup:`providers` . EtherscanProvider( [ network ] [ , apiToken ] )
+new :sup:`ethers . providers` . EtherscanProvider( [ network ] [ , apiToken ] )
     Connect to the `Etherscan`_ blockchain `web service API`_.
 
     **default:** *network*\ ='homestead', *apiToken*\ =null
 
-new :sup:`providers` . JsonRpcProvider( [ url ] [ , network ] )
+new :sup:`ethers . providers` . JsonRpcProvider( [ url ] [ , network ] )
     Connect to the `JSON-RPC API`_ *url* of an Ethereum node, such as `Parity`_ or `Geth`_.
 
     **default:** *url*\ ="http://localhost:8545/", *network*\ ='homestead'
 
-new :sup:`providers` . InfuraProvider( [ network ] [ , apiAccessToken ] )
+new :sup:`ethers . providers` . InfuraProvider( [ network ] [ , apiAccessToken ] )
     Connect to the `INFURA`_ hosted network of Ethereum nodes.
 
     **default:** *network*\ ='homestead', *apiAccessToken*\ =null
 
-new :sup:`providers` . Web3Provider( web3Provider [ , network ] )
+new :sup:`ethers . providers` . Web3Provider( web3Provider [ , network ] )
     Connect to an existing Web3 provider (e.g. `web3Instance.currentProvider`).
 
     **default:** *network*\ ='homestead'
 
-new :sup:`providers` . FallbackProvider( providers )
+new :sup:`ethers . providers` . FallbackProvider( providers )
     Improves reliability by attempting each provider in turn, falling back to the
     next in the list if an error was encountered.
 
-:sup:`providers` . getDefaultProvider( [ network ] )
+:sup:`ethers . providers` . getDefaultProvider( [ network ] )
     This automatically creates a FallbackProvider backed by INFURA and Etherscan; recommended
 
     **default:** *network*\ ='homestead'
@@ -105,10 +103,6 @@ indirectly populated by child Objects.
 
 Provider
 --------
-
-:sup:`prototype` . testnet
-    Whether the provider is on the testnet (Ropsten); this is being deprecated in favor
-    of **prototype.name**
 
 :sup:`prototype` . name
     The name of the network the provider is connected to (e.g. 'homestead', 'ropsten', 'rinkeby', 'kovan')

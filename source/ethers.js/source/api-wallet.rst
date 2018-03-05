@@ -6,12 +6,9 @@ Wallets
 A **wallet** manages a private/public key pair which is used to cryptographically sign
 transactions and prove ownership on the Ethereum network.
 
-::
-
-    var Wallet = require('ethers').Wallet;
-
 
 -----
+
 
 Creating Instances
 ==================
@@ -19,21 +16,21 @@ Creating Instances
 new :sup:`ethers` . Wallet( privateKey [ , provider ] )
     Creates a new instance from *privateKey* and optionally connect a provider
 
-:sup:`Wallet` . createRandom ( [ options ] )
+:sup:`ethers . Wallet` . createRandom ( [ options ] )
     Creates a new random wallet; *options* may specify ``extraEntropy`` to stir into
     the random source (make sure this wallet is stored somewhere safe; if lost there
     is no way to recover it)
 
-:sup:`Wallet` . fromEncryptedWallet ( json, password [ , progressCallback ] )
+:sup:`ethers . Wallet` . fromEncryptedWallet ( json, password [ , progressCallback ] )
     Decrypt an encrypted Secret Storage JSON Wallet (from Geth, or that was
     created using *prototype.encrypt* )
 
-:sup:`Wallet` . fromMnemonic ( mnemonic [ , path ] )
+:sup:`ethers . Wallet` . fromMnemonic ( mnemonic [ , path ] )
     Generate a BIP39 + BIP32 wallet from a *mnemonic* deriving path
 
     **default:** *path*\ ="m/44'/60'/0'/0/0"
 
-:sup:`Wallet` . fromBrainWallet ( username , password [ , progressCallback ] )
+:sup:`ethers . Wallet` . fromBrainWallet ( username , password [ , progressCallback ] )
     Generate a wallet from a username and password
 
 *Examples*
@@ -387,7 +384,7 @@ Parsing Transactions
 Verifying Messages
 ==================
 
-:sup:`Wallet` . verifyMessage ( message , signature )
+:sup:`ethers . Wallet` . verifyMessage ( message , signature )
     Returns the address that signed *message* with *signature*.
 
 *Examples*

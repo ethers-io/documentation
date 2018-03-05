@@ -60,10 +60,10 @@ Name collisions with the built-in properties (below) will not be overwritten.
 Instead, they must be accessed through the **functions** or **events**
 property.
 
-Due to signature overloading, multiple functions can have the same name.
-The JavaScript type system cannot determine these, so only the first
-function with a given name will be available. (In the future this will
-be addressed by adding parameter explicit calls).
+Due to signature overloading, multiple functions can have the same name. The
+first function specifed in the ABI will be bound to its name. To access
+overloaded functions, use the full typed signature of the functions (e.g.
+``contract["foobar(address,uint256)"]``).
 
 :sup:`prototype` . address
     The address (or ENS name) of the contract.
@@ -98,17 +98,23 @@ Examples
     /**
      *  contract SimpleStore {
      *
-     *      event valueChanged(string oldValue, string newValue);
+     *      event valueChanged(address author, string oldValue, string newValue);
      *
+     *      address _author;
      *      string _value;
      *
      *      function setValue(string value) public {
-     *          valueChanged(_value, value);
+     *          _author = msg.sender;
+     *          valueChanged(_author, _value, value);
      *          _value = value;
      *      }
      *
      *      function getValue() constant public returns (string value) {
      *          return _value;
+     *      }
+     *
+     *      function getAuthorAndValue() constant public returns (address author, string value) {
+     *          return (_author, _value);
      *      }
      *  }
      */
@@ -121,6 +127,17 @@ Examples
              "inputs":[],
              "name":"getValue",
              "outputs":[{"name":"value","type":"string"}],
+             "payable":false,
+             "type":"function"
+         },
+         {
+             "constant":true,
+             "inputs":[],
+             "name":"getAuthorAndValue",
+             "outputs":[
+                 {"name":"author","type":"address"},
+                 {"name":"value","type":"string"}
+             ],
              "payable":false,
              "type":"function"
          },
@@ -149,27 +166,36 @@ Examples
      var contract = new ethers.Contract(address, abi, provider);
 
 
-*Example Constant Function* -- **getValue ( ) returns ( address author , string value )** ::
+*Example Constant Function* -- **getAuthorAndValue ( ) returns ( address author , string value )** ::
 
      var callPromise = contract.getValue();
 
      callPromise.then(function(result) {
-
-         // Solidity return tuples, which can be accessed by their
-         // position or by their name.
-
-         // The first entry of the return result (value)
-         console.log('Positional argument (0):' + result[0]);
-         console.log('Named argument (value): ' + result.value);
+         console.log('Positional argument [0]; author:   ' + result[0]);
+         console.log('Positional argument [1]; value:    ' + result[1]);
+         console.log('Keyword argument [author]; author: ' + result.author);
+         console.log('Keyword argument [value]; value:   ' + result.value);
      });
 
-     // This is identical to the above call
+     // These are identical to the above call
      // var callPromise = contract.functions.getValue();
+     // var callPromise = contract['getValue()']();
+     // var callPromise = contract.functions['getValue()']();
+     // var callPromise = contract['getValue()']();
+
+
+*Example Constant Function with Single Return Value* -- **getValue ( ) returns ( string value )** ::
+
+     var callPromise = contract.getValue();
+
+     callPromise.then(function(value) {
+         console.log('Single Return Value:' + value);
+     });
 
 
 *Example Non-Constant Function* -- **setValue ( string value )** ::
 
-     // to call a non-constant function, the contract needs to be 
+     // to call a non-constant function, the contract needs to be
      // initialized with a wallet or a customSigner
      var provider = ethers.providers.getDefaultProvider('ropsten');
      var address = '0x2BA27534A8814765795f1Db8AEa01d5dbe4112d9';
