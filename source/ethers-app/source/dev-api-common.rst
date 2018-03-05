@@ -14,7 +14,7 @@ There are several parameter formats and types that come up often:
 Addresses
 =========
 
-Addresses come in many formats, but all blach...
+Addresses come in several formats, and any may be used.
 
 - Hex Strings (eg. 0x1234567890abcdef1234567890abcdef12345678)
 - ICAP Addresses  (eg. XE0724JX5HRQ9R1XA24VWJM008DMOB17YBC)
@@ -37,6 +37,7 @@ To convert between the various formats::
     // Get a checksum address (from any address format)
     var address = ethers.getAddress(address)
 
+
 .. _big-numbers:
 
 Big Numbers
@@ -44,14 +45,14 @@ Big Numbers
 
 Since **Ethereum** deals a great deal with large numberic values (far larger
 than JavaScript can handle without `loss of precission`_), many calls require and return instances
-of **BN.js**, which can be accessed at ``ethers.utils.BN``.
+of **BigNumber**.
 
-Some common things you will likely want to do with **BN.js**::
+Some common things you will likely want to do with a **BigNumber**::
 
     // Convert to base 10 string
     var valueBase10 = value.toString();
 
-    // Convert to a number (only valid for values within 53 bits)
+    // Convert to a number (only valid for values that fit in 53 bits)
     var valueNumber = value.toNumber();
 
     // Convert to hex string
@@ -90,12 +91,15 @@ Example::
     var binaryHelloWorld = '0x48656c6c6f576f726c64';
     var thirtySeven = '0x25';
 
+     // Convert a hex string to a byte Array
      ethers.utils.arrayify(binaryHelloWorld);
     // Uint8Array [ 72, 101, 108, 108, 111, 87, 111, 114, 108, 100 ]
 
+    // Convert a byte Array to a hex string
     ethers.utils.hexlify([12, 34, 56]);
     // '0x0c2238'
 
+    // Convert a number to a hex string
     ethers.utils.hexlify(37);
     // '0x25'
 

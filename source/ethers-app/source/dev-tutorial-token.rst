@@ -29,18 +29,18 @@ Creating Your First Application
 
 **1. Download and Unzip the Demo Project**
 
-    Download the `demo project <https://cdn.ethers.io/tutorials/token-demo.zip>`_ and unzip it onto your computer, then navigate to that folder inside a terminal.
+    Download the `demo project <https://cdn.ethers.io/tutorials/token-tutorial.zip>`_ and unzip it onto your computer, then navigate to that folder inside a terminal.
 
 **2. Try It Out, Run Your Application Locally on the Testnet**
 
     The ethers-build toolchain includes the standard **Ethers container** and can serve it locally as a normal webserver with your app embedded inside it.
     ::
 
-    /Users/ethers/my-app> ethers-build serve --testnet
+    /Users/ethers/my-app> ethers-build serve
 
 **3. Browse the Application**
 
-    Now in your browser, navigate to `the local running ethers.io container. <http://localhost:8080/_/#!/app-link-insecure/localhost:8080/>`_
+    Now in your browser, navigate to `the local running ethers.io container. <http://ropsten.ethers.io/#!/app-link-insecure/localhost:8080/>`_
 
     Play around with it a bit, to get an idea of how it works.
 
@@ -56,7 +56,6 @@ Here are the list of files downloaded from the demo project.
     * **test-token.js** - The tests for the FreeTestToken contract
     * **index.html** - The frontend HTML application
     * **package.json** - This is a standard NPM project, so we manage dependencies and scripts using the NPM tools
-    * **ethers-app-v0.3.js** - Framework library; you shouldn't need to change this
     * **dashboard-v0.2.*** - Demo Framework library; you shouldn't need to change this
  
 -----

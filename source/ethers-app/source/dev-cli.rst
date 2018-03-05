@@ -9,7 +9,7 @@ deploy and manage applications on the *ethers.space* hosting service.
     /Users/ricmoo> sudo npm install -g ethers-cli
 
 Note:
-    You need `node.js <install-node>`_ and `git <install-git>`_ installed.
+    You need `node.js`_ and `git`_ installed.
 
 -----
 
@@ -259,4 +259,4 @@ Note:
 -----
 
 .. _node.js: https://docs.npmjs.com/getting-started/installing-node
-.. _install-git: https://git-scm.com/book/en/v2/Getting-Started-Installing-Git
+.. _git: https://git-scm.com/book/en/v2/Getting-Started-Installing-Git
