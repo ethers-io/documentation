@@ -161,7 +161,8 @@ Prototype
         data: "0x",
 
         // This ensures the transaction cannot be replayed on different networks
-        chainId: providers.Provider.chainId.homestead
+        chainId: providers.networks.homestead.chainId
+        
     };
 
     var signedTransaction = wallet.sign(transaction);
@@ -307,7 +308,7 @@ These operations require the wallet have a provider attached to it.
         value: ethers.utils.parseEther("1.0"),
 
         // Recommendation: omit chainId; the provider will populate this
-        // chaindId: providers.Provider.chainId.homestead
+        // chaindId: providers.networks.homestead.chainId
     };
 
     // Estimate the gas cost for the transaction
