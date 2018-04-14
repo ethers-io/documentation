@@ -11,7 +11,9 @@ deploy and manage applications on the *ethers.space* hosting service.
 Note:
     You need `node.js`_ and `git`_ installed.
 
+
 -----
+
 
 Overview
 ========
@@ -23,42 +25,33 @@ normal Ethereum account can be used to sign and publish to the the servers.
 Each application received its own domain name, so that it can reliably use
 browser security feartures, such as cookies and local storage.
 
-Application are bundled as a **slug** which includes the zipped contents
-(and hashes) of your files, with an optional signature.
+All applications must be managed through git, which allows the toolchain
+to provide helpful *diffs* between live files, the git repository and the
+production files.
 
-All applications must be managed additionally through git, which allows the
-toolchain to provide helpful *diffs* between live files, the git repository
-and the production files.
-
-Unsigned slugs are useful for testing, as you can share them with friends (or
-a team of QA) without the ability to be published.
-
-Only signed slugs can be uploaded to *ethers.space*. Once ready, anyone with the
-account.json and password can sign the slug and deploy it to production. Or you
-can create a signed slug and set a cronjob to deploy it at a specific time.
 
 -----
+
 
 Usage
 =====
 
 ::
 
-    /Users/ricmoo> ethers-build --help
+    /Users/ricmoo> ethers-deploy --help
 
-    Command Line Interface - ethers/2.0.0
+    Command Line Interface - ethers/4.0.0
 
-    ethers-build compile FILENAME [ Compiler Options ] [ --optimize ]
+    ethers-deploy compile FILENAME_SOL [ Compiler Options ]
 
-    ethers-build deploy FILENAME.js [ Node + Account + Tx Options ]
-    ethers-build deploy FILENAME.sol [ Node + Account + Tx Options ]
+    ethers-deploy run FILENAME_JS [ Node + Account + Tx Options ]
+    ethers-deploy deploy FILENAME_SOL [ Node + Account + Tx Options ]
 
-    ethers-build serve [ --slug SLUG ] [ --port PORT ] [ Node Options ]
-    ethers-build init
-    ethers-build status [ --head ] [ --slug A ] [ --slug B ] [ --published ]
-    ethers-build diff [ --head ] [ --slug A ] [ --slug B ] [ --published ]
-    ethers-build prepare [ --signed ]
-    ethers-build publish --slug SLUG
+    ethers-deploy serve [ GIT_HASH ] [--host HOST] [ --port PORT ] [ Node Options ]
+
+    ethers-deploy init [ FILENAME ]
+    ethers-deploy publish [ GIT_HASH ] [ PATH ] [ Account Options ]
+    ethers-deploy status [ Account Options ]
 
     Compile Options
       --bytecode            Only output bytecode
@@ -67,7 +60,7 @@ Usage
       --optimize            Run the optimizer
 
     Node Options
-      --testnet             Use testnet configuration
+      --network NETWORK     Use NETWORK configuration (default: homestead)
       --rpc URL             Use the Ethereum node at URL
 
     Account Options
@@ -82,6 +75,7 @@ Usage
     Options
       --help                Show this help
       --version             Show the version
+
 
 -----
 
@@ -108,155 +102,95 @@ You also need to create a git repository to manage an application.
     Initialized empty Git repository in /Users/ricmoo/my-app/.git/
     
     # Create your ethers account.json
-    /Users/ricmoo> ethers-build init
+    /Users/ricmoo> ethers-deploy init
     Do NOT lose or forget this password. It cannot be reset.
     New Account Password: ******
     Confirm Password: ******
     Encrypting Account... (this may take a few seconds)
     Account successfully created. Keep this file SAFE. Do NOT check it into source control.
 
+
 -----
+
 
 status
 ------
 
-Displays the details and current status of the package, including files that
-have changed since the last git commit or since last published to production.
-
---head
-    Compare against the head of the git repository.
-
---slug SLUG
-   Compare against the contents of *SLUG*. This may be used twice to compare two slugs.
-
---published
-   Compare against the contents the are currently in production.
-
-
-By default, the files are compared against the live files (if no options, published
-is assumed).
+Displays the details and current status of the account. The Git Tag can be used
+to perform ``git diff`` against the current deployed version and the repository.
 
 *Example:* ::
 
-    /Users/ricmoo/my-app> ethers-build status
-    Address: 0xa5681b1fbDA76E0d4aB646E13460a94fDcD3c1C1
-    URL:     https://0xa5681b1fbda76e0d4ab646e13460a94fdcd3c1c1.ethers.space
-    No files changed.
-    
+    /Users/ricmoo/my-app> ethers-deploy status
 
------
+    Status:
+      Address:   0xf01EE6669078e5eC9A452fd60B7d18D41b53163E
+      PubNonce:  1
+      Git Tag:   af7c9f846fb2958f0a7c7a97f7ab637d14784b73
+      Raw URL:   https://0xf01ee6669078e5ec9a452fd60b7d18d41b53163e.ethers.space/
 
-diff
-----
-
-Show all difference between the files.
-
---head
-   Compare against the head of the git repository.
-
---slug SLUG
-   Compare against the contents of *SLUG*. This may be used twice to compare two slugs.
-
---published
-   Compare against the contents the are currently in production.
-
-By default, the files are compared against the live files (if no options, published
-is assumed).
-
-*Example:* ::
-
-    # Compare the contents of unsigned.slug to the live files
-    /Users/ricmoo/my-app> ethers-build diff --slug unsigned.slug
-
-    # Compare the contents of unsigned.slug to the production files
-    /Users/ricmoo/my-app> ethers-build diff --slug unsigned.slug --published
+    Application URLs:
+      Mainnet:  https://ethers.io/#!/app-link/0xf01ee6669078e5ec9a452fd60b7d18d41b53163e.ethers.space/
+      Ropsten:  https://ropsten.ethers.io/#!/app-link/0xf01ee6669078e5ec9a452fd60b7d18d41b53163e.ethers.space/
+      Rinkebey: https://rinkeby.ethers.io/#!/app-link/0xf01ee6669078e5ec9a452fd60b7d18d41b53163e.ethers.space/
+      Kovan:    https://kovan.ethers.io/#!/app-link/0xf01ee6669078e5ec9a452fd60b7d18d41b53163e.ethers.space/
 
 
 -----
 
-
-prepare
--------
-
-Create a slug for sharing or deployment from the head in the git repository.
-
---signed
-    Sign the slug so that anyone may deploy it to production. This will require
-    the account.json and password.
-
-If you leave a slug unsigned, it can be signed during the `push`_ step.
-
-*Example:* ::
-
-    /Users/ricmoo/my-app> ethers-build prepare
-    Adding:
-        index.html
-
-    /Users/ricmoo/my-app> ethers-build prepare --signed
-    Account Password: ************
-    Adding:
-        index.html
-
------
 
 serve
 -----
 
-Run a local webserver, hosting the ethers.io website and your application
-for local testing and demonstrations.
+Run a local webserver, hosting the application for testing against the production
+ethers.io websites.
 
---slug SLUG
-    Serve the contents of *SLUG* instead of the live files.
-
---port PORT
-    Connect the webserver on *PORT*. (default: 8080)
-
---testnet
-    Use the Ethereum testnet (Ropsten)
-
-This modifies the ethers.io sandbox container to allow insecure connections
-over http using the *app-link-insecure* type, which is not available in
-production. Make sure all external resources will be fetched over HTTPS.
+If ``--rpc`` is provided, the custom node will be loaded into the application
+by the custom-rpc.ethers.io container.
 
 *Example:* ::
 
-    /Users/ricmoo/my-app> ethers-build serve --testnet
-    Serving content from file:///Users/ricmoo/my-app
+    /Users/ricmoo/my-app> ethers-deploy serve --rpc http://localhost:7545
+    Serving content from file:///Users/ricmoo/Development/ethers/tutorials/simplestore
     Listening on port: 8080
-    Server Ethers app: http://localhost:8080/_/#!/app-link-insecure/localhost:8080/
+    Local Application Test URL:
+      http://custom-rpc.ethers.io/?port=7545#!/app-link-insecure/localhost:8080/
 
-If you then open your web browser to http://localhost:8080/_/#!/app-link-insecure/localhost:8080/
-you will see your application running.
 
 -----
 
-push
-----
+
+publish
+-------
 
 Deploy your application to the production environment. You can determine the URL
 of your production environment using `status`_.
 
---slug SLUG
-    The prepared slug to deploy. If the slug was not signed, you will
-    be prompted for the account password, which will be used to sign
-    the slug uploaded to *ethers.space*. **(required)**
-
 *Example:* ::
 
-    # Deploy an unsigned slug
-    /Users/ricmoo/my-app> ethers-build push --slug unsigned.slug
-    Account Password: ******
+    /Users/ricmoo/my-app> ethers-deploy publish
+    Account Password (homestead:./account.json): *************
+    Sign Message:
+        Message: ...
+    Sign Message? [y/n]: y
+
     Successfully deployed!
 
-    # Deploy a signed slug
-    /Users/ricmoo/my-app> ethers-build push --slug 0xBb20dc4D5335BF696E0Bf750bdB3E9eCf96d3B02.slug
-    Successfully deployed!
+    Application URLs:
+      Mainnet:  https://ethers.io/#!/app-link/0xf01ee6669078e5ec9a452fd60b7d18d41b53163e.ethers.space/
+      Ropsten:  https://ropsten.ethers.io/#!/app-link/0xf01ee6669078e5ec9a452fd60b7d18d41b53163e.ethers.space/
+      Rinkebey: https://rinkeby.ethers.io/#!/app-link/0xf01ee6669078e5ec9a452fd60b7d18d41b53163e.ethers.space/
+      Kovan:    https://kovan.ethers.io/#!/app-link/0xf01ee6669078e5ec9a452fd60b7d18d41b53163e.ethers.space/
 
 Note:
     Once you have deployed your application, it may take up to 2 minutes
     for the server caches to clear and the new version to be visible.
 
+
 -----
+
 
 .. _node.js: https://docs.npmjs.com/getting-started/installing-node
 .. _git: https://git-scm.com/book/en/v2/Getting-Started-Installing-Git
+
+
