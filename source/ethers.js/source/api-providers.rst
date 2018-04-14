@@ -14,42 +14,40 @@ To manage state changing operations, you must use a :ref:`Wallet <api-wallet>`
 to sign transactions. If you pass a wallet in as a signer to
 a :ref:`Contract <api-contract>`, this is managed for you by the contract.
 
-::
-
-    var providers = require('ethers').providers;
 
 -----
+
 
 Connecting to Ethereum
 ======================
 
 There are several ways to connect to the Ethereum blockchain:
 
-new :sup:`providers` . EtherscanProvider( [ network ] [ , apiToken ] )
+new :sup:`ethers . providers` . EtherscanProvider( [ network ] [ , apiToken ] )
     Connect to the `Etherscan`_ blockchain `web service API`_.
 
     **default:** *network*\ ='homestead', *apiToken*\ =null
 
-new :sup:`providers` . JsonRpcProvider( [ url ] [ , network ] )
+new :sup:`ethers . providers` . JsonRpcProvider( [ url ] [ , network ] )
     Connect to the `JSON-RPC API`_ *url* of an Ethereum node, such as `Parity`_ or `Geth`_.
 
     **default:** *url*\ ="http://localhost:8545/", *network*\ ='homestead'
 
-new :sup:`providers` . InfuraProvider( [ network ] [ , apiAccessToken ] )
+new :sup:`ethers . providers` . InfuraProvider( [ network ] [ , apiAccessToken ] )
     Connect to the `INFURA`_ hosted network of Ethereum nodes.
 
     **default:** *network*\ ='homestead', *apiAccessToken*\ =null
 
-new :sup:`providers` . Web3Provider( web3Provider [ , network ] )
+new :sup:`ethers . providers` . Web3Provider( web3Provider [ , network ] )
     Connect to an existing Web3 provider (e.g. `web3Instance.currentProvider`).
 
     **default:** *network*\ ='homestead'
 
-new :sup:`providers` . FallbackProvider( providers )
+new :sup:`ethers . providers` . FallbackProvider( providers )
     Improves reliability by attempting each provider in turn, falling back to the
     next in the list if an error was encountered.
 
-:sup:`providers` . getDefaultProvider( [ network ] )
+:sup:`ethers . providers` . getDefaultProvider( [ network ] )
     This automatically creates a FallbackProvider backed by INFURA and Etherscan; recommended
 
     **default:** *network*\ ='homestead'
@@ -105,10 +103,6 @@ indirectly populated by child Objects.
 
 Provider
 --------
-
-:sup:`prototype` . testnet
-    Whether the provider is on the testnet (Ropsten); this is being deprecated in favor
-    of **prototype.name**
 
 :sup:`prototype` . name
     The name of the network the provider is connected to (e.g. 'homestead', 'ropsten', 'rinkeby', 'kovan')
@@ -227,7 +221,7 @@ Blockchain Status
     Returns a :ref:`Promise <promise>` with the block at *blockHashorBlockNumber*. (See: :ref:`Block Responses <blockresponse>`)
 
 :sup:`prototype` . getTransaction ( transactionHash )
-    Returns a :ref:`Promise <promise>` with the transaction with *transactionHash*. (See: :ref:`Transaction Results <transactionresult>`)
+    Returns a :ref:`Promise <promise>` with the transaction with *transactionHash*. (See: :ref:`Transaction Responses <transactionresponse>`)
 
 :sup:`prototype` . getTransactionReceipt ( transactionHash )
     Returns a :ref:`Promise <promise>` with the transaction receipt with *transactionHash*.
@@ -569,6 +563,9 @@ Waiting for Transactions
 Objects
 =======
 
+There are several common objects and types that are commonly used as input parameters or
+return types for various provider calls.
+
 .. _blocktag:
 
 Block Tag
@@ -641,10 +638,10 @@ or :ref:`hex string <hexstring>`.
     }
 
 
-.. _transactionresult:
+.. _transactionresponse:
 
-Transaction Results
--------------------
+Transaction Response
+--------------------
 
 ::
 
@@ -715,11 +712,16 @@ Transaction Receipts
         log: [ ],
         logsBloom: "0x00" ... [ 256 bytes of 0 ] ... "00",
 
-        // State root
+        // Post-Byzantium hard-fork
+        byzantium: false
+
+        ////////////
+        // Pre-byzantium blocks will have a state root:
         root: "0x8a27e1f7d3e92ae1a01db5cce3e4718e04954a34e9b17c1942011a5f3a942bf4",
 
-        // Transaction status: 1 for success, 0 for error
-        status: 1,
+        ////////////
+        // Post-byzantium blocks will have a status (0 indicated failure during execution)
+        // status: 1
     }
 
 .. _filter:
@@ -755,18 +757,52 @@ Provider Specific Extra API Calls
 Etherscan
 ---------
 
-:sup:`EtherscanProvider` . getEtherPrice ( )
+:sup:`prototype` . getEtherPrice ( )
     Returns a :ref:`Promise <promise>` with the price of ether in USD.
 
-**Example**
+:sup:`prototype` . getHistory ( addressOrName [ , startBlock [ , endBlock ] ] )
+    Returns a :ref:`Promise <promise>` with an array of :ref:`Transaction Responses <transactionresponse>`
+    for each transaction to or from *addressOrName* between *startBlock* and *endBlock* (inclusive).
+
+**Examples**
 
 ::
 
-    var ethers = require('ethers');
     var provider = new ethers.providers.EtherscanProvider();
 
+    // Getting the current Ethereum price
     provider.getEtherPrice().then(function(price) {
         console.log("Ether price in USD: " + price);
+    });
+
+
+    // Getting the transaction history of an address
+    var address = '0xb2682160c482eB985EC9F3e364eEc0a904C44C23';
+    var startBlock = 3135808;
+    var endBlock = 5091477;
+    ethers.getHistory(address, startBlock, endBlock).then(function(history) {
+        console.log(history);
+        // [
+        //   {
+        //     hash: '0x327632ccb6d7bb47b455383e936b2f14e6dc50dbefdc214870b446603b468675',
+        //     blockHash: '0x0415f0d2741de45fb748166c7dc2aad9b3ff66bcf7d0a127f42a71d3e286c36d',
+        //     blockNumber: 3135808,
+        //     transactionIndex: 1,
+        //     from: '0xb2682160c482eB985EC9F3e364eEc0a904C44C23',
+        //     gasPrice: ethers.utils.bigNumberify('0x4a817c800'),
+        //     gasLimit: ethers.utils.bigNumberify('0x493e0'),
+        //     to: '0xAe572713CfE65cd7033774170F029B7219Ee7f70',
+        //     value: ethers.utils.bigNumberify('0xd2f13f7789f0000'),
+        //     nonce: 25,
+        //     data: '0x',
+        //     creates: null,
+        //     networkId: 0
+        //   },
+        //   {
+        //     hash: '0x7c10f2e7125a1fa5e37b54f5fac5465e8d594f89ff97916806ca56a5744812d9',
+        //     ...
+        //   }
+        // ]
     });
 
 

@@ -28,10 +28,10 @@ See the `BIP 39 Specification`_ to learn more about Mnemonic Phrases.
 Creating Instances
 ------------------
 
-:sup:`HDNode` **. fromMnemonic** ( mnemonic )
+:sup:`ethers . HDNode` **. fromMnemonic** ( mnemonic )
     Create an HDNode from a *mnemonic* phrase.
 
-:sup:`HDNode` **. fromSeed** ( seed )
+:sup:`ethers . HDNode` **. fromSeed** ( seed )
     Create an HDNode from a seed.
 
 
@@ -64,17 +64,17 @@ Prototype
 Static Methods
 --------------
 
-:sup:`HDNode` **. mnemonicToEntropy** ( mnemonic )
+:sup:`ethers . HDNode` **. mnemonicToEntropy** ( mnemonic )
     Convert a *mnemonic* to its binary entropy. (throws an error if the checksum
     is invalid)
 
-:sup:`HDNode` **. entropyToMnemonic** ( entropy )
+:sup:`ethers . HDNode` **. entropyToMnemonic** ( entropy )
     Convert the binary *entropy* to the mnemonic phrase.
 
-:sup:`HDNode` **. mnemonicToSeed** ( mnemonic )
+:sup:`ethers . HDNode` **. mnemonicToSeed** ( mnemonic )
     Compute the BIP39 seed from *mnemonic*.
 
-:sup:`HDNode` **. isValidMnemonic** ( string )
+:sup:`ethers . HDNode` **. isValidMnemonic** ( string )
     Returns true if and only if the string is a valid mnemonic (including
     the checksum)
 
@@ -127,20 +127,6 @@ Prototype
     The function to deploy the contract (compiled to *bytecode*) to the network, passing
     *params* into the ABI constructor. If the ABI does not have a constructor, a default
     one is generated.
-
-
-Static Methods
---------------
-
-:sup:`Interface` . encodeParams( types , values )
-    Returns a :ref:`hex string <hexstring>` of the *values* encoded as the *types*. (throws if a
-    value is invalid for the type)
-
-:sup:`Interface` . decodeParams( [ names , ] types , data )
-    Returns an Object by parsing *data* assuming *types*, with each parameter
-    accessible as apositional parameters. If *names* is provided, each
-    parameter is also accessible by its name. (throws if *data* is invalid
-    for the *types*)
 
 
 *Examples*
@@ -302,20 +288,46 @@ Static Methods
 
 -----
 
+ABI Coder
+=========
+
+Creating Instances
+------------------
+
+new :sup:`ethers . utils` **. AbiCoder** ( [ coerceFunc ] )
+    Create a new ABI Coder object, which calls *coerceFunc* for each parsed value
+    during decoding. The *coerceFunc* should have the signature: ``function(type, value)``.
+
+Static Properties
+-----------------
+
+:sup:`ethers . utils` **. defaultAbiCoder**
+    A default instance of the coder which can be used, which has a *coerceFunc*
+    which will call ``toNumber()`` on BigNumbers whose **type** is less than
+    53 bits and is safe for JavaScript Number instances.
+
+Prototype
+---------
+
+:sup:`prototype` . encode ( [ names , ] types , values )
+    Returns a :ref:`hex string <hexstring>` of the *values* encoded as the *types*.
+    If names is provided, *values* may contain named keys for tuples, otherwise
+    each tuple expects an Array. Throws if a value is invalid for the type.
+
+:sup:`prototype` . decode ( [ names , ] types , data )
+    Returns an Object by parsing *data* assuming *types*, with each parameter
+    accessible as apositional parameters. If *names* is provided, each
+    parameter is also accessible by its name. Throws if *data* is invalid
+    for the *types*.
+
+
+-----
+
 Provider (Sub-Classing)
 =======================
 
 See the :ref:`Provider API <api-provider>` for more common usage. This documentation
 is designed for developers that are sub-classing Provider.
-
-Prototype
----------
-
-:sup:`prototype` . perform ( method , params )
-    The only method needed to override in a subclass. All values are sanitized
-    and defaults populated in params and the result is sanitized before returning.
-    Returns a :ref:`Promise <promise>`, see the example below for overview of
-    *method* and *params*.
 
 Static Methods
 --------------
@@ -329,6 +341,15 @@ Static Methods
     from a *url* with an optional *body*. The optional *processFunc* is called on
     the parsed JSON before being passed to the Promise's resolve. (throwing an error
     in the *processFunc* will cause the Promise to reject)
+
+Prototype
+---------
+
+:sup:`prototype` . perform ( method , params )
+    The only method needed to override in a subclass. All values are sanitized
+    and defaults populated in params and the result is sanitized before returning.
+    Returns a :ref:`Promise <promise>`, see the example below for overview of
+    *method* and *params*.
 
 *Examples*
 ----------
@@ -449,22 +470,35 @@ Signing Key
 ===========
 
 The SigningKey interface provides an abstraction around the
-*secp256k1 elliptic curve cryptography* library, which signs digests.
-
-::
-
-    var SigningKey = ethers._SigningKey;
+*secp256k1 elliptic curve cryptography* library, which signs digests,
+computes public keys from private keys and performs *ecrecover* which
+computes a public key from a digest and a signature.
 
 
 Creating Instances
 ------------------
 
-A private key may be a any :ref:`hex string <hexstring>` or an :ref:`Arrayish <api-arrayish>`
-representing 32 bytes.
-
-new :sup:`ethers` . _SigningKey ( privateKey )
+new :sup:`ethers` . SigningKey ( privateKey )
     Create a new SigningKey and compute the corresponding public key and address.
+    A private key may be a any :ref:`hex string <hexstring>` or an
+    :ref:`Arrayish <api-arrayish>` representing 32 bytes.
 
+
+Static Methods
+--------------
+
+:sup:`SigningKey` . recover ( digest, r, s, recoveryParam )
+    Given a message *digest* and the signature parameters *r*, *s*
+    and *recoveryParam* compute the the address that signed the
+    message.
+
+:sup:`SigningKey` . getPublicKey ( publicOrPrivateKey [, compressed] )
+    Given a *publicOrPrivateKey*, return the public key, optionally *compressed*.
+
+    **default:** *compressed*\ =false
+
+:sup:`SigningKey` . publicKeyToAddress ( publicOrPrivateKey )
+    Convert a *publicOrPrivateKey* to an Ethereum address.
 
 Prototype
 ---------
@@ -480,23 +514,6 @@ Prototype
 
 :sup:`prototype` . signDigest ( messageDigest )
     The compressed public key
-
-
-Static Methods
---------------
-
-:sup:`_SigningKey` . recover( digest, r, s, recoveryParam )
-    Given a message *digest* and the signature parameters *r*, *s*
-    and *recoveryParam* compute the the address that signed the
-    message.
-
-:sup:`_SigningKey` . getPublicKey( publicOrPrivateKey [, compressed] )
-    Given a *publicOrPrivateKey*, return the public key, optionally *compressed*.
-
-    **default:** *compressed*\ =false
-
-:sup:`_SigningKey` . publicKeyToAddress( publicOrPrivateKey )
-    Convert a *publicOrPrivateKey* to an Ethereum address.
 
 
 *Examples*
@@ -574,11 +591,11 @@ See: https://github.com/ethereum/wiki/wiki/RLP
 Static Methods
 --------------
 
-:sup:`RLP` . encode( object )
+:sup:`ethers . utils . RLP` . encode( object )
     Encodes an object as an RLP :ref:`hex string <hexstring>`. (throws an Error if the object contains
     invalid items)
 
-:sup:`RLP` . decode( hexStringOrArrayish )
+:sup:`ethers . utils . RLP` . decode( hexStringOrArrayish )
     Decode *hexStringOrArrayish* into the encoded object. (throws an Error if
     invalid RLP-coded data)
 

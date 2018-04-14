@@ -68,12 +68,12 @@ Serving Content
 Content for an Ethereum dApp may be served using nearly any service or technology,
 Simply include the `Ethers App Library`_ (or download a copy and serve it yourself)::
 
-    <script src="https://cdn.ethers.io/scripts/ethers-app-v0.2.min.js"
+    <script src="https://cdn.ethers.io/scripts/ethers-app-v0.4.min.js"
             charset="utf-8" type="text/javascript">
     </script>
 
 For security, we recommend downloading the Ethers App Library and serving it from the
-same host serving the content, so that there is no trust required for our CDN.
+same host serving the content, so that there is no trust required from our CDN.
 
 Here is a quick list of some services we recommend for building Ethers applications:
 
@@ -116,4 +116,4 @@ can enter a URL here manually.
 .. _Window postMessage API: https://developer.mozilla.org/en-US/docs/Web/API/Window/postMessage
 .. _a fragment is never sent to the server: https://tools.ietf.org/html/rfc3986#section-3.5
 .. _available on GitHub: https://github.com/ethers-io/ethers-server
-.. _Ethers App Library: https://cdn.ethers.io/scripts/ethers-app-v0.2.js
+.. _Ethers App Library: https://cdn.ethers.io/scripts/ethers-app-v0.4.js
