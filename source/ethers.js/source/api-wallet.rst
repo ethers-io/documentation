@@ -361,7 +361,7 @@ Parsing Transactions
         data: "0x",
 
         // This ensures the transaction cannot be replayed on different networks
-        chainId: ethers.providers.Provider.chainId.homestead
+        chainId: ethers.providers.networks.homestead.chainId
     };
 
     var signedTransaction = wallet.sign(transaction);
