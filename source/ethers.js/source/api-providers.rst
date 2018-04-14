@@ -185,7 +185,7 @@ Account Actions
 
     var ethers = require('ethers');
     var providers = ethers.providers;
- 
+
     var provider = providers.getDefaultProvider('ropsten');
 
     var address = "0x02F024e0882B310c6734703AB9066EdD3a10C6e0";
@@ -339,17 +339,17 @@ usually be used instead.
 
     var ethers = require('ethers');
     var provider = ethers.providers.getDefaultProvider();
-    
+
     // setup a transaction to call the CryptoKitties.symbol() function
     // CryptoKitties contract address
-    var address = "0x06012c8cf97BEaD5deAe237070F9587f8E7A266d"; 
+    var address = "0x06012c8cf97BEaD5deAe237070F9587f8E7A266d";
     // first 8 nibbles of the hash of symbol()
     var data = ethers.utils.id('symbol()').substring(0,10);
     var transaction = {
-        to: address, 
-        data: data   
+        to: address,
+        data: data
     }
-    
+
     provider.call(transaction).then(function(result) {
         console.log(result);
         // '0x000000000000000000000000000000000000000000000000000000000000002'+
@@ -357,28 +357,28 @@ usually be used instead.
         // '434b000000000000000000000000000000000000000000000000000000000000'
     });
 
-**sendTransaction** :: 
+**sendTransaction** ::
 
     var ethers = require('ethers');
     var privateKey = '0x0123456789012345678901234567890123456789012345678901234567890123';
     var wallet = new ethers.Wallet(privateKey);
     wallet.provider = ethers.providers.getDefaultProvider('ropsten');
-    
+
     var transaction = {
         to: "0x88a5C2d9919e46F883EB62F7b8Dd9d0CC45bc290",
-        value: ethers.utils.parseEther("0.1") 
+        value: ethers.utils.parseEther("0.1")
     };
-    
+
     var estimateGasPromise = wallet.estimateGas(transaction);
-    
+
     estimateGasPromise.then(function(gasEstimate) {
         console.log(gasEstimate.toString());
         transaction.gasLimit = gasEstimate;
-    
-    
+
+
         // Send the transaction
         var sendTransactionPromise = wallet.sendTransaction(transaction);
-    
+
         sendTransactionPromise.then(function(transactionHash) {
            console.log(transactionHash);
         });
@@ -406,11 +406,11 @@ Contract State
 *Examples*
 ----------
 
-**getCode** :: 
+**getCode** ::
 
     var ethers = require('ethers');
     var provider = ethers.providers.getDefaultProvider();
-    
+
     var contractAddress = '0x6fC21092DA55B392b045eD78F4732bff3C580e2c';
     var contractEnsName = 'registrar.firefly.eth';
     var codePromise = provider.getCode(contractEnsName);
@@ -418,7 +418,7 @@ Contract State
        console.log('getCode by ENS name:');
        console.log(result);
     });
-    
+
     var codeByAddressPromise = provider.getCode(contractAddress);
     codeByAddressPromise.then(function(result){
        console.log('getCode by contract address:');
@@ -426,24 +426,24 @@ Contract State
     });
 
 
-**getStorageAt** :: 
+**getStorageAt** ::
 
 
     var ethers = require('ethers');
     var provider = ethers.providers.getDefaultProvider();
-    
+
     var contractEnsName = 'registrar.firefly.eth';
     var storagePromise = provider.getStorageAt(contractEnsName, 0);
     storagePromise.then(function(result){
        console.log(result);
     });
 
-**getLogs** :: 
+**getLogs** ::
 
 
     var ethers = require('ethers');
     var provider = ethers.providers.getDefaultProvider();
-    
+
     var cryptoKittiesContractAddress = '0x06012c8cf97BEaD5deAe237070F9587f8E7A266d';
     var topic = '0x241ea03ca20251805084d27d4440371c34a0b85ff108f6bb5611248f73818b80';
     var filter = {
@@ -497,12 +497,12 @@ Event Types
     ``callback( blockNumber )``
 
 any address
-    When the balance of the coresposding address changes
+    When the balance of the corresponding address changes
 
     ``callback( balance )``
 
 any transaction hash
-    When the coresponding transaction is mined; also see
+    When the corresponding transaction is mined; also see
     :ref:`Waiting for Transactions <waitForTransaction>`
 
     ``callback( transaction )``
@@ -518,7 +518,7 @@ an array of topics
 Waiting for Transactions
 ------------------------
 
-:sup:`prototype` . waitForTransaction ( transachtionHash [ , timeout ] )
+:sup:`prototype` . waitForTransaction ( transactionHash [ , timeout ] )
     Return a :ref:`Promise <promise>` which returns the transaction once *transactionHash* is
     mined, with an optional *timeout* (in milliseconds)
 
@@ -546,7 +546,7 @@ Waiting for Transactions
     // OR equivalently the waitForTransaction() returns a Promise
 
     provider.waitForTransaction(transactionHash).then(function(transaction) {
-        console.log('Transaction Minded: ' + transaction.hash);
+        console.log('Transaction Mined: ' + transaction.hash);
         console.log(transaction);
     });
 

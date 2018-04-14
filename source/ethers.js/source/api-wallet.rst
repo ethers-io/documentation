@@ -132,7 +132,7 @@ Prototype
 
 :sup:`prototype` . encrypt ( password [ , options ] [ , progressCallback ] )
     Returns a Promise with the wallet encrypted as a Secret Storage JSON Wallet;
-    *options* may include overrides for the scypt parameters.
+    *options* may include overrides for the scrypt parameters.
 
 *Examples*
 ----------
@@ -143,7 +143,7 @@ Prototype
     var Wallet = ethers.Wallet;
     var utils = ethers.utils;
     var providers = ethers.providers;
- 
+
     var privateKey = "0x0123456789012345678901234567890123456789012345678901234567890123";
     var wallet = new Wallet(privateKey);
 
@@ -339,7 +339,7 @@ Parsing Transactions
 
 ::
 
-    // Mainnet: 
+    // Mainnet:
     var ethers = require('ethers');
     var Wallet = ethers.Wallet;
     var utils = ethers.utils;

@@ -326,7 +326,7 @@ Solidity Cryptographic Functions
 
 Solidity uses a `non-standard packed mode`_ to encode parameters that are passed
 into its hashing functions. The parameter types and values can be used to compute
-the result of teh hash functions as would be performed by Solidity.
+the result of the hash functions as would be performed by Solidity.
 
 :sup:`utils` . solidityKeccak256 ( types, values )
     Compute the keccak256 cryptographic hash using the Solidity non-standard (tightly)

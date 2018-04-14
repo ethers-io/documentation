@@ -4,7 +4,7 @@ Security Concerns
 Shared localStorage
 ===================
 
-If you host mulitple applications on the same domain, or use a domain which
+If you host multiple applications on the same domain, or use a domain which
 is controlled by someone else (for example: wordpress), the localStorage
 across these applications will be shared.
 
@@ -28,5 +28,5 @@ setting innerHTML.
 Cross-Site Foragery Requests (CSFR)
 ===================================
 
-@TODO: Explain cross-site foragery requests, including session keys in URLs and
+@TODO: Explain cross-site forgery requests, including session keys in URLs and
 verifying them.

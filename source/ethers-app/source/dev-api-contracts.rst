@@ -2,7 +2,7 @@
 Contracts
 *********
 
-A Contract is an program which has been installed at an address, has allocated
+A Contract is a program which has been installed at an address, has allocated
 memory and is runnning on the Ethereum blockchain, with methods that can read and
 update the the allocated memory.
 
@@ -118,14 +118,14 @@ adding parameter explicit calls).
     An object that maps each ABI event name (lower case, with the "on" prefix) to a
     callback that is triggered when the event occurs.
 
-    
+
 **Example**
 
 ::
 
     // This example is the Zen Messenger on mainnet
     // See: https://etherscan.io/address/0x954De93D9f1Cd1e2e3AE5964F614CDcc821Fac64#code
-    
+
     var contractAddress = "0x954De93D9f1Cd1e2e3AE5964F614CDcc821Fac64";
     var contractAbi = [
         {
@@ -170,8 +170,8 @@ adding parameter explicit calls).
             type: "event"
         }
     ];
-  
-    
+
+
     // Connect to the contract
     var contract = ethers.getContract(contractAddress, contractInterface);
 
@@ -227,7 +227,7 @@ or rejects an Error with the message 'cancelled'.
         var waitPromise = ethers.blockchain.waitForTransaction(transaction.hash);
 
         waitPromise.then(function(transaction) {
-            console.log('Transaction confirmed in block: ' + transactin.blockNumber);
+            console.log('Transaction confirmed in block: ' + transaction.blockNumber);
         });
 
     }).catch(function(error) {
@@ -261,7 +261,7 @@ so the "valueChanged" event in the above contract becomes, "onvaluechanged".
         console.log('  oldValue: ' + oldValue);
         console.log('  newValue: ' + newValue);
     };
-    
+
 -----
 
 .. _Promise: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise

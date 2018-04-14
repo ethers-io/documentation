@@ -201,7 +201,7 @@ Examples
      var address = '0x2BA27534A8814765795f1Db8AEa01d5dbe4112d9';
      var privateKey = '0x0123456789012345678901234567890123456789012345678901234567890123';
      var wallet = new ethers.Wallet(privateKey, provider);
-     var contract = new ethers.Contract(address, abi, wallet); 
+     var contract = new ethers.Contract(address, abi, wallet);
 
      var sendPromise = contract.setValue("Hello World");
 
@@ -213,7 +213,7 @@ Examples
      // var sendPromise = contract.functions.setValue("Hello World");
 
      // Overriding parameters; any of these are optional and get passed
-     // as an additional parameter adter all function parameters.
+     // as an additional parameter after all function parameters.
      var overrideOptions = {
          gasLimit: 250000,
          gasPrice: 9000000000,
@@ -233,17 +233,17 @@ Examples
      };
 
      // This is identical to the above event registry
-     // contract.events.onvaluechanged = function(authot, value) { ...
+     // contract.events.onvaluechanged = function(author, value) { ...
 
 
 *Example Non-Constant Gas Estimate* ::
 
-     // to get the gas estimate, the contract needs to be 
+     // to get the gas estimate, the contract needs to be
      // initialized with a wallet or a customSigner
      var provider = ethers.providers.getDefaultProvider('ropsten');
      var privateKey = '0x0123456789012345678901234567890123456789012345678901234567890123';
      var wallet = new ethers.Wallet(privateKey, provider);
-     var contract = new ethers.Contract(address, abi, wallet); 
+     var contract = new ethers.Contract(address, abi, wallet);
 
      var estimatePromise = contract.estimate.setValue("Hello World");
 
