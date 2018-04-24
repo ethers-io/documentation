@@ -780,7 +780,7 @@ Etherscan
     var address = '0xb2682160c482eB985EC9F3e364eEc0a904C44C23';
     var startBlock = 3135808;
     var endBlock = 5091477;
-    ethers.getHistory(address, startBlock, endBlock).then(function(history) {
+    provider.getHistory(address, startBlock, endBlock).then(function(history) {
         console.log(history);
         // [
         //   {
