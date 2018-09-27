@@ -58,12 +58,8 @@ The most useful operations you will need are:
     If *onResolve* returns a Promise, it will be inserted into the chain of the returned
     promise. If *onResolve* throws an Error, the returned Promise will reject.
 
-**Examples**
-------------
-
-**Cleaning out an account**
-
-::
+.. code-block:: javascript
+    :caption: *Cleaning out an account*
 
     var ethers = require('ethers');
     var targetAddress = "0x02F024e0882B310c6734703AB9066EdD3a10C6e0";
@@ -72,7 +68,7 @@ The most useful operations you will need are:
     var wallet = new ethers.Wallet(privateKey);
 
     // Promises we are interested in
-    var provider = ethers.providers.getDefaultProvider('ropsten');
+    var provider = ethers.getDefaultProvider('ropsten');
     var balancePromise = provider.getBalance(wallet.address);
     var gasPricePromise = provider.getGasPrice();
     var transactionCountPromise = provider.getTransactionCount(wallet.address);
@@ -161,7 +157,7 @@ Example::
     0xDc2a3d9f938e13cd947ec05abc7fe734df8dd826
       ^^
 
-To convert between ICAP and checksum addresses, see :ref:`getAddress() <api-getAddress>`.
+To convert to a checksum addresses, see :ref:`getAddress() <utils-getaddress>`.
 
 .. _checksum address: https://github.com/ethereum/EIPs/issues/55
 
@@ -183,7 +179,130 @@ An ICAP address has the following format::
 
     XE [2 digit checksum] [up to 31 alphanumeric characters]
 
-To convert between ICAP and checksum addresses, see :ref:`getAddress() <api-getAddress>`.
+To convert to an ICAP addresses, see :ref:`getIcapAddress() <utils-getaddress>`.
+
+-----
+
+Supported Platforms
+===================
+
+The ethers.js library aims to be as inclusive as possible. People often ask, "why
+don't you use feature X or syntax Y", to which the response is usually that it
+begins to heavily restricts the potential user-base.
+
+The current target for ethers.js is to support an environment which is close to ES3,
+with the addition of Object.defineProperty, which is a bit more advanced than an old
+ES3 environment, but which adds considerable safety and security to the library.
+
+The phantomjs test harness (``npm run test-phantomjs``) has a handful of shims included
+in the tests/test.html, but serves as a good benchmark for what minimum features as
+supported.
+
+Currently the Test Suite runs against:
+
+- node 6
+- node 8
+- node 10
+- phantomjs
+
+Another supported aspect is the use of paths in ``require``. A small part of the
+library may be included, for example, ``keccak256``, by using::
+
+    var keccak256 = require('ethers/utils/keccak256').keccak256;
+
+Which means renaming files is a breaking change, and may only be done between
+major version releases. This is useful for people using older, pre-ES6
+tree-shaking, to keep their package sizes small.
+
+Now that the library also supports TypeScript, another question that often comes
+up is (for example) "why are you doing runtime checks that a value is a number,
+the TypeScript compiler checks that for you". It is important to keep in mind that
+TypeScript, while a useful tool, is not the tool that everyone uses, and so for
+anyone using JavaScript sans TypeScript, the library should guarantee safety and
+correctness for them too and fail early and fail loud if anything is out of the
+ordinary.
+
+-----
+
+Contributing
+============
+
+I fully welcome anyone to contribute to the project, and appreciate all the
+help I can get. That said, if you have ideas for a PR, please discuss them
+as an issue on GitHub first.
+
+A few notes on contributing.
+
+- Please read the above section on Supported Platforms.
+- An important feature of ethers.js is that it is small, which means uncommon features or large features need a great deal of discussion.
+- Since ethers.js is designed to be extensible, there are often ways to add optional packages; for example, look at the BIP39 mnemonic wordlists, which are not bundled into the browser version, but are designed to be seamlessly loaded into the browser if their functionality is required.
+- Dependencies; part A) in line with the above, "keep things small", adding a dependency is a big deal, as they often bring many other packages with them. A great deal of effort has been used to tune the build process and dependency list to keep things tight
+- Dependencies; part B) adding additional third party libraries, adds a huge attack vector fun malicious code or unexpected consequences, so adding a dependency is certainly something that needs to be very convincingly argued.
+- Dependencies; part C) part B applies to dev dependencies too. A devDependency can inject or otherwise do strange things and increases the attack vector for bugs and malicious code
+- Changing filenames or breaking backwards compatibility is a no-go for minor version changes
+- Major version changes do not happen often. We place @TODO in the source code for things that will be updated at the next version change.
+- Please use the GitHub issue system to make requests, or discuss changes you would like to make.
+- Testing is a must. It should generally take you longer to write test cases than it does the actual code.
+- All test cases must pass on all platforms supported on Travis CI.
+
+-----
+
+Security
+========
+
+A lot of people store a lot of value in Ethereum and the code that runs it. As
+such, security is important.
+
+
+The GitHub and NPM Package
+--------------------------
+
+The keys used to sign code on GitHub are well protected, but anyones computer
+can be compromised.
+
+All services involved have two-factor authentication set up, but please keep in
+mind that bleeding-edge technology should probably not be used in production
+environments.
+
+Keep in mind, however, that at the end of the day, if NPM were hacked, anything
+in the system could be replaced.
+
+By using a version that is perhaps a few weeks old, providing there are no
+advisories otherwise, there has been adequate time for any compromise to have
+been broadcast.
+
+Also, one of the test cases verifies the deterministic build on `Travis CI`_. **Never**
+install a version which has failed the Continuous Integration tests on Travis CI.
+
+Long story short, be careful.
+
+In the event of any significant issue, it will be posted on the README.md file,
+have an issue posted, with ALL CAPS in the title and will be broadcast on the
+@ethersproject twitter.
+
+
+Memory Hard Brute-Force Encrpyting
+----------------------------------
+
+A topic that often comes up is the poor performance of decrypting Wallet.
+
+While it may not be immediately obvious, this is intentional for security
+purposes.
+
+If it takes the legitimate user, who knows the password 5 seconds or so to
+unlock their account, that means that an attsacker must spend 5 seconds per
+password attempt, so to guess a million passwords, requires 5 million
+seconds. Client software can streamline the process by using Secure Enclaves
+or other secure local places to store the decrypted wallet to improve the
+customer experience past the first decryption.
+
+
+Responsible Disclosure
+----------------------
+
+If you find a critical bug or security issue with ethers.js, please contact
+support@ethers.io so that we can address it before you make it public.
+You will receive credit for the discovery after it is fixed and announced. :)
 
 -----
 
@@ -191,5 +310,6 @@ To convert between ICAP and checksum addresses, see :ref:`getAddress() <api-getA
 .. _IEEE 754 double-precision binary floating point: https://en.wikipedia.org/wiki/Double-precision_floating-point_format
 .. _BN.js: https://github.com/indutny/bn.js/
 .. _Promise in JavaScript: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise
+.. _Travis CI: https://travis-ci.org/ethers-io/ethers.js
 
 .. EOF

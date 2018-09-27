@@ -1,139 +1,200 @@
+.. |nbsp| unicode:: U+00A0 .. non-breaking space
+
 .. _api-provider:
 
-Providers API
-*************
+Providers
+*********
 
 A Provider abstracts a connection to the Ethereum blockchain, for issuing queries
-and sending state changing transactions.
+and sending signed state changing transactions.
 
-Unlike the Web3 provider, there is no concept of accounts or signing entities in
-an Ethers Provider. It is simply a connection to the network, and cannot unlock
-accounts or sign and is unaware of your Ethereum addresses.
+The *EtherscanProvider* and *InfuraProvider* offer the ability to connect to public
+third-party providers without the need to run any Ethereum node yourself.
 
-To manage state changing operations, you must use a :ref:`Wallet <api-wallet>`
-to sign transactions. If you pass a wallet in as a signer to
-a :ref:`Contract <api-contract>`, this is managed for you by the contract.
+The *JsonRpcProvider* and *IpcProvider* allow you to connect to Ethereum nodes you
+control or have access to, including mainnet, testnets, proof-of-authority (PoA)
+nodes or Ganache.
 
+If you already have a Web3 application, or Web3-compatible Provider
+(e.g. MetaMask's web3.currentProvider), it can be wrapped by a *Web3Provider* to make
+it compatible with the ethers Provider API.
+
+For most situations, it is recommended that you use a default provider, which will
+connect to both Etherscan and INFURA simultaneously:
+
+.. code-block:: javascript
+    :caption: *connect to a default provider*
+
+    // You can use any standard network name
+    //  - "homestead"
+    //  - "rinkeby"
+    //  - "ropsten"
+    //  - "kovan"
+
+    let provider = ethers.getDefaultProvider('ropsten');
+
+.. code-block:: javascript
+    :caption: *connect to MetaMask*
+
+    // The network will be automatically detected; if the network is
+    // changed in MetaMask, it causes a page refresh.
+
+    let provider = new ethers.providers.Web3Provider(web3.currentProvider);
 
 -----
 
+.. _provider-connect:
 
 Connecting to Ethereum
 ======================
 
-There are several ways to connect to the Ethereum blockchain:
+There are several methods to connect to the Ethereum network provided. If you are not
+running your own local Ethereum node, it is recommended that you use the ``getDefaultProvider()``
+method.
 
-new :sup:`ethers . providers` . EtherscanProvider( [ network ] [ , apiToken ] )
+:sup:`ethers` . getDefaultProvider( [ network :sup:`= "homestead"` ] ) |nbsp| :sup:`=>` |nbsp| :sup:`Provider`
+    This creates a FallbackProvider backed by multiple backends (INFURA and Etherscan).
+
+    This is the **recommended** method of connecting to the Ethereum network if you are
+    not running your own Ethereum node.
+
+new :sup:`ethers . providers` . EtherscanProvider( [ network :sup:`= "homestead"` ] [ , apiToken ] )
     Connect to the `Etherscan`_ blockchain `web service API`_.
 
-    **default:** *network*\ ='homestead', *apiToken*\ =null
+    **Also See:** Etherscan provider-specific :ref:`Properties <provider-etherscan-properties>` and :ref:`Operations <provider-etherscan-extra>`
 
-new :sup:`ethers . providers` . JsonRpcProvider( [ url ] [ , network ] )
-    Connect to the `JSON-RPC API`_ *url* of an Ethereum node, such as `Parity`_ or `Geth`_.
-
-    **default:** *url*\ ="http://localhost:8545/", *network*\ ='homestead'
-
-new :sup:`ethers . providers` . InfuraProvider( [ network ] [ , apiAccessToken ] )
+new :sup:`ethers . providers` . InfuraProvider( [ network :sup:`= "homestead"` ] [ , apiAccessToken ] )
     Connect to the `INFURA`_ hosted network of Ethereum nodes.
 
-    **default:** *network*\ ='homestead', *apiAccessToken*\ =null
+    **Also See:** INFURA provider-specific :ref:`Properties <provider-infura-properties>`
+
+new :sup:`ethers . providers` . JsonRpcProvider( [ urlOrInfo :sup:`= "http://localhost:8545"` ] [ , network ] )
+    Connect to the `JSON-RPC API`_ URL *urlorInfo* of an Ethereum node, such as `Parity`_ or `Geth`_.
+
+    The *urlOrInfo* may also be specified as an object with the properties:
+
+    - **url** --- the JSON-RPC URL (required)
+    - **user** --- a username to use for Basic Authentication (optional)
+    - **password** --- a password to use for Basic Authentication (optional)
+    - **allowInsecure** --- allow Basic Authentication over an insecure HTTP network (default: false)
+
+    **Also See:** JSON-RPC provider-specific :ref:`Properties <provider-jsonrpc-properties>` and :ref:`Operations <provider-jsonrpc-extra>`
 
 new :sup:`ethers . providers` . Web3Provider( web3Provider [ , network ] )
     Connect to an existing Web3 provider (e.g. `web3Instance.currentProvider`).
 
-    **default:** *network*\ ='homestead'
+    The *network* is also automatically detected if not specified; see the above
+    description of *network* for JsonRpcProvider for details.
+
+    **Also See:** Web3 provider-specific :ref:`Properties <provider-web3-properties>` and :ref:`Operations <provider-jsonrpc-extra>`
 
 new :sup:`ethers . providers` . FallbackProvider( providers )
     Improves reliability by attempting each provider in turn, falling back to the
-    next in the list if an error was encountered.
+    next in the list if an error was encountered. The network is determined from the
+    providers and the **must** match each other.
 
-:sup:`ethers . providers` . getDefaultProvider( [ network ] )
-    This automatically creates a FallbackProvider backed by INFURA and Etherscan; recommended
+    **Also See:** Fallback provider-specific :ref:`Properties <provider-fallback-properties>`
 
-    **default:** *network*\ ='homestead'
+new :sup:`ethers . providers` . IpcProvider( path [ , network ] )
+    Connect to the `JSON-RPC API`_ *path* over IPC (named pipes) to an Ethereum node, such
+    as `Parity`_ or `Geth`_.
+
+    The *network* is also automatically detected if not specified; see the above
+    description of *network* for JsonRpcProvider for details.
+
+    **Also See:** IPC provider-specific :ref:`Properties <provider-ipc-properties>` and :ref:`Operations <provider-jsonrpc-extra>`
+
+.. code-block:: javascript
+    :caption: *connect to third-party providers*
+
+    // You can use any standard network name
+    //  - "homestead"
+    //  - "rinkeby"
+    //  - "ropsten"
+    //  - "kovan"
+
+    let defaultProvider = ethers.getDefaultProvider('ropsten');
+
+    // ... OR ...
+
+    let etherscanProvider = new ethers.providers.EtherscanProvider('ropsten');
+
+    // ... OR ...
+
+    let infuraProvider = new ethers.providers.InfuraProvider('ropsten');
+
+.. code-block:: javascript
+    :caption: *connect to a Geth or Parity node*
+
+    // When using the JSON-RPC API, the network will be automatically detected
 
 
-*Examples*
-----------
+    // Default: http://localhost:8545
+    let httpProvider = new ethers.providers.JsonRpcProvider();
 
-::
 
-    var providers = require('ethers').providers;
+    // To connect to a custom URL:
+    let url = "http://something-else.com:8546";
+    let customHttpProvider = new ethers.providers.JsonRpcProvider(url);
 
-    // Connect to Ropsten (the test network)
 
-    // You may specify any of:
-    // - boolean; true = ropsten, false = homestead
-    // - object; { name: 'ropsten', chainId: 3 } (see ethers.networks);
-    // - string; e.g. 'homestead', 'ropsten', 'rinkeby', 'kovan'
-    var network = providers.networks.ropsten;
+    // Connect over named pipes using IPC:
+    let path = "/var/run/parity.ipc";
+    let ipcProvider = new ethers.providers.IpcProvider(path);
 
-    // Connect to INFUA
-    var infuraProvider = new providers.InfuraProvider(network);
 
-    // Connect to Etherscan
-    var etherscanProvider = new providers.EtherscanProvider(network);
+.. code-block:: javascript
+    :caption: *connect to an existing Web3 Provider*
 
-    // Creating a provider to automatically fallback onto Etherscan
-    // if INFURA is down
-    var fallbackProvider = new providers.FallbackProvider([
-        infuraProvider,
-        etherscanProvider
-    ]);
+    // When using a Web3 provider, the network will be automatically detected
 
-    // This is equivalent to using the getDefaultProvider
-    var provider = providers.getDefaultProvider(network)
+    // e.g. HTTP provider
+    let currentProvider = new web3.providers.HttpProvider('http://localhost:8545');
 
-    // Connect to a local Parity instance
-    var provider = new providers.JsonRpcProvider('http://localhost:8545', network);
-
-    // Connect to an injected Web3's provider (e.g. MetaMask)
-    var web3Provider = new providers.Web3Provider(web3.currentProvider, network);
-
+    let web3Provider = new ethers.providers.Web3Provider(currentProvider);
 
 -----
 
-Prototype
-=========
+Properties
+==========
 
-All properties are immutable, and reflect their default value if not specified, or if
-indirectly populated by child Objects.
+All properties are immutable unless otherwise specified, and will reflect their
+default values if left unspecified.
 
 .. _provider:
 
 Provider
 --------
 
-:sup:`prototype` . name
-    The name of the network the provider is connected to (e.g. 'homestead', 'ropsten', 'rinkeby', 'kovan')
+:sup:`prototype` . blockNumber
+    The most recent block number (block height) this provider has seen and has triggered
+    events for. If no block has been seen, this is *null*.
 
-:sup:`prototype` . chainId
-    The chain ID (or network ID) this provider is connected as; this is used by
-    signers to prevent `replay attacks`_ across compatible networks
+:sup:`prototype` . polling
+    *mutable*
 
-FallbackProvider :sup:`( inherits from Provider )`
---------------------------------------------------
+    If the provider is currently polling because it is actively watching for events. This
+    may be set to enable/disable polling temporarily or disabled permanently to allow a
+    node process to exit.
 
-:sup:`prototype` . providers
-    A **copy** of the array of providers (modifying this variable will not affect
-    the providers attached)
+:sup:`prototype` . pollingInterval
+    *mutable*
 
-JsonRpcProvider :sup:`( inherits from Provider )`
--------------------------------------------------
+    The frequency (in ms) that the provider is polling. The default interval is 4 seconds.
 
-:sup:`prototype` . url
-    The JSON-RPC URL the provider is connected to
+    This may make sense to lower for PoA networks or when polling a local node. When polling
+    Etherscan or INFURA, setting this too low may result in the service blocking your IP
+    address or otherwise throttling your API calls.
 
-:sup:`prototype` . send ( method , params )
-    Send the JSON-RPC *method* with *params*. This is useful for calling
-    non-standard or less common JSON-RPC methods. A :ref:`Promise <promise>` is
-    returned which will resolve to the parsed JSON result.
+.. _provider-etherscan-properties:
 
-EtherscanProvider :sup:`( inherits from Provider )`
----------------------------------------------------
+EtherscanProvider :sup:`( inherits from BaseProvider )`
+-------------------------------------------------------
 
 :sup:`prototype` . apiToken
     The Etherscan API Token (or null if not specified)
+
+.. _provider-infura-properties:
 
 InfuraProvider :sup:`( inherits from JsonRpcProvider )`
 -------------------------------------------------------
@@ -141,168 +202,212 @@ InfuraProvider :sup:`( inherits from JsonRpcProvider )`
 :sup:`prototype` . apiAccessToken
     The INFURA API Access Token (or null if not specified)
 
+
+.. _provider-jsonrpc-properties:
+
+JsonRpcProvider :sup:`( inherits from BaseProvider )`
+-----------------------------------------------------
+
+:sup:`prototype` . connection
+    An object describing the connection of the JSON-RPC endpoint with the properties:
+
+    - **url** --- the JSON-RPC URL
+    - **user** --- a username to use for Basic Authentication (optional)
+    - **password** --- a password to use for Basic Authentication (optional)
+    - **allowInsecure** --- allows Basic Authentication over an insecure HTTP network
+
+.. _provider-web3-properties:
+
 Web3Provider :sup:`( inherits from JsonRpcProvider )`
--------------------------------------------------------
+-----------------------------------------------------
 
 :sup:`prototype` . provider
     The underlying Web3-compatible provider from the Web3 library, for example
     an `HTTPProvider`_ or `IPCProvider`_. The only required method on a Web3 provider
     is:
 
-    *sendAsync ( method , params , callback )*
+    - **sendAsync ( method , params , callback )**
+
+.. _provider-fallback-properties:
+
+FallbackProvider :sup:`( inherits from BaseProvider )`
+------------------------------------------------------
+
+:sup:`prototype` . providers
+    A **copy** of the array of providers (modifying this variable will not affect
+    the attached providers)
+
+
+.. _provider-ipc-properties:
+
+IpcProvider :sup:`( inherits from JsonRpcProvider )`
+----------------------------------------------------
+
+:sup:`prototype` . path
+    The JSON-RPC IPC (named pipe) path the provider is connected to.
 
 
 -----
 
-Account Actions
-===============
+.. _provider-network:
 
-:sup:`prototype` . getBalance ( addressOrName [ , blockTag ] )
+Network
+=======
+
+:sup:`prototype` . getNetwork ( ) |nbsp| :sup:`=>` |nbsp| :sup:`Promise<Network>`
+    A :ref:`Promise <promise>` that resolves to a :ref:`Network <network>` object
+    describing the connected network and chain.
+
+-----
+
+.. _provider-account:
+
+Account
+=======
+
+:sup:`prototype` . getBalance ( addressOrName [ , blockTag :sup:`= "latest"` ] ) |nbsp| :sup:`=>` |nbsp| :sup:`Promise<BigNumber>`
     Returns a :ref:`Promise <promise>` with the balance (as a :ref:`BigNumber <bignumber>`) of
     *addressOrName* at *blockTag*. (See: :ref:`Block Tags <blocktag>`)
 
-    **default:** *blockTag*\ ="latest"
-
-:sup:`prototype` . getTransactionCount ( addressOrName [ , blockTag ] )
+:sup:`prototype` . getTransactionCount ( addressOrName [ , blockTag :sup:`= "latest"` ] ) |nbsp| :sup:`=>` |nbsp| :sup:`Promise<number>`
     Returns a :ref:`Promise <promise>` with the number of sent transactions (as a Number) from
     *addressOrName* at *blockTag*. This is also the nonce required to send a new
     transaction. (See: :ref:`Block Tags <blocktag>`)
 
-    **default:** *blockTag*\ ="latest"
 
-:sup:`prototype` . lookupAddress ( address )
-    Returns a :ref:`Promise <promise>` which resolves to the ENS name (or null) that *address* resolves
-    to.
+.. code-block:: javascript
+    :caption: *get the balance of an account*
 
-:sup:`prototype` . resolveName ( ensName )
-    Returns a :ref:`Promise <promise>` which resolves to the address (or null) of that the *ensName*
-    resolves to.
+    let address = "0x02F024e0882B310c6734703AB9066EdD3a10C6e0";
 
-*Examples*
-----------
-
-::
-
-    var ethers = require('ethers');
-    var providers = ethers.providers;
-
-    var provider = providers.getDefaultProvider('ropsten');
-
-    var address = "0x02F024e0882B310c6734703AB9066EdD3a10C6e0";
-
-    provider.getBalance(address).then(function(balance) {
+    provider.getBalance(address).then((balance) => {
 
         // balance is a BigNumber (in wei); format is as a sting (in ether)
-        var etherString = ethers.utils.formatEther(balance);
+        let etherString = ethers.utils.formatEther(balance);
 
         console.log("Balance: " + etherString);
     });
 
-    provider.getTransactionCount(address).then(function(transactionCount) {
-        console.log("Total Transactions Ever Send: " + transactionCount);
-    });
+.. code-block:: javascript
+    :caption: *get the transactin count of an account*
 
-    provider.resolveName("test.ricmoose.eth").then(function(address) {
-        console.log("Address: " + address);
+    let address = "0x02F024e0882B310c6734703AB9066EdD3a10C6e0";
+
+    provider.getTransactionCount(address).then((transactionCount) => {
+        console.log("Total Transactions Ever Send: " + transactionCount);
     });
 
 -----
 
+.. _provider-blockchain:
+
 Blockchain Status
 =================
 
-:sup:`prototype` . getBlockNumber ( )
+:sup:`prototype` . getBlockNumber ( ) |nbsp| :sup:`=>` |nbsp| :sup:`Promise<number>`
     Returns a :ref:`Promise <promise>` with the latest block number (as a Number).
 
-:sup:`prototype` . getGasPrice ( )
+:sup:`prototype` . getGasPrice ( ) |nbsp| :sup:`=>` |nbsp| :sup:`Promise<BigNumber>`
     Returns a :ref:`Promise <promise>` with the current gas price (as a :ref:`BigNumber <bignumber>`).
 
-:sup:`prototype` . getBlock ( blockHashOrBlockNumber )
+:sup:`prototype` . getBlock ( blockHashOrBlockNumber ) |nbsp| :sup:`=>` |nbsp| :sup:`Promise<Block>`
     Returns a :ref:`Promise <promise>` with the block at *blockHashorBlockNumber*. (See: :ref:`Block Responses <blockresponse>`)
 
-:sup:`prototype` . getTransaction ( transactionHash )
-    Returns a :ref:`Promise <promise>` with the transaction with *transactionHash*. (See: :ref:`Transaction Responses <transactionresponse>`)
+:sup:`prototype` . getTransaction ( transactionHash ) |nbsp| :sup:`=>` |nbsp| :sup:`Promise<TransactionResponse>`
+    Returns a :ref:`Promise <promise>` with the transaction with *transactionHash*. (See: :ref:`Transaction Responses <transaction-response>`)
 
-:sup:`prototype` . getTransactionReceipt ( transactionHash )
+:sup:`prototype` . getTransactionReceipt ( transactionHash ) |nbsp| :sup:`=>` |nbsp| :sup:`Promise<TransactionReceipt>`
     Returns a :ref:`Promise <promise>` with the transaction receipt with *transactionHash*.
-    (See: :ref:`Transaction Receipts <transactionReceipt>`)
+    (See: :ref:`Transaction Receipts <transaction-receipt>`)
 
-*Examples*
-----------
 
-**Current State**\ ::
+.. code-block:: javascript
+    :caption: *current state*
 
-    var provider = providers.getDefaultProvider();
-
-    provider.getBlockNumber().then(function(blockNumber) {
+    provider.getBlockNumber().then((blockNumber) => {
         console.log("Current block number: " + blockNumber);
     });
 
-    provider.getGasPrice().then(function(gasPrice) {
+    provider.getGasPrice().then((gasPrice) => {
         // gasPrice is a BigNumber; convert it to a decimal string
         gasPriceString = gasPrice.toString();
 
         console.log("Current gas price: " + gasPriceString);
     });
 
-**Blocks**\ ::
+.. code-block:: javascript
+    :caption: *blocks*
 
-    var provider = providers.getDefaultProvider();
+    // See: https://ropsten.etherscan.io/block/3346773
 
     // Block Number
-    provider.getBlock(3346773).then(function(block) {
+    provider.getBlock(3346773).then((block) => {
         console.log(block);
     });
 
     // Block Hash
-    var blockHash = "0x7a1d0b010393c8d850200d0ec1e27c0c8a295366247b1bd6124d496cf59182ad";
-    provider.getBlock(blockHash).then(function(block) {
+    let blockHash = "0x7a1d0b010393c8d850200d0ec1e27c0c8a295366247b1bd6124d496cf59182ad";
+    provider.getBlock(blockHash).then((block) => {
         console.log(block);
     });
 
-**Transactions**\ ::
+.. code-block:: javascript
+    :caption: *transactions*
 
-    var provider = providers.getDefaultProvider();
+    // See: https://ropsten.etherscan.io/tx/0xa4ddad980075786c204b45ab8193e543aec4411bd94894abef47dc90d4d3cc01
 
-    var transactionHash = "0x7baea23e7d77bff455d94f0c81916f938c398252fb62fce2cdb43643134ce4ed";
+    let transactionHash = "0xa4ddad980075786c204b45ab8193e543aec4411bd94894abef47dc90d4d3cc01"
 
-    provider.getTransaction(transactionHash).then(function(transaction) {
+    provider.getTransaction(transactionHash).then((transaction) => {
         console.log(transaction);
     });
 
-    provider.getTransactionReceipt(transactionHash).then(function(transactionReceipt) {
-        console.log(transactionReceipt);
+    provider.getTransactionReceipt(transactionHash).then((receipt) => {
+        console.log(receipt);
     });
 
 -----
 
-Ethereum Name Resolution
-========================
+.. _provider-ens:
 
-The Ethereum Naming Service (ENS) allows easy to remember and use names to be
+Ethereum Naming Service
+=======================
+
+The `Ethereum Naming Service`_ (ENS) allows easy to remember and use names to be
 assigned to Ethereum addresses. Any provider operation which takes an address
 may also take an ENS name.
 
-It is often useful to resolve a name entered by a user or perform a reverse lookup
-of an address to get a more human readbale name.
+ENS also provides the ability for a reverse lookup, which determines the name
+for an address if it has been configured.
 
-**Resolving Names**\ ::
+:sup:`prototype` . resolveName ( ensName ) |nbsp| :sup:`=>` |nbsp| :sup:`Promise<Address>`
+    Returns a :ref:`Promise <promise>` which resolves to the address of that the *ensName*
+    resolves to (or *null* is not configured).
 
-    var providers = require('ethers').providers;
-    var provider = providers.getDefaultProvider();
-    provider.resolveName('registrar.firefly.eth').then(function(address) {
-        console.log(address);
-        // '0x6fC21092DA55B392b045eD78F4732bff3C580e2c'
+:sup:`prototype` . lookupAddress ( address ) |nbsp| :sup:`=>` |nbsp| :sup:`Promise<string>`
+    Returns a :ref:`Promise <promise>` which resolves to the ENS name that *address* resolves
+    to (or *null* if not configured).
+
+.. code-block:: javascript
+    :caption: *resolve an ENS name to an address*
+
+    provider.resolveName("registrar.firefly.eth").then(function(address) {
+        console.log("Address: " + address);
+        // "0x6fC21092DA55B392b045eD78F4732bff3C580e2c"
     });
 
-**Looking up Addresses**\ ::
+.. code-block:: javascript
+    :caption: *lookup the ENS name of an address*
 
-    provider.lookupAddress('0x6fC21092DA55B392b045eD78F4732bff3C580e2c').then(function(name) {
-        console.log(name);
-        // 'registrar.firefly.eth'
+    let address = "0x6fC21092DA55B392b045eD78F4732bff3C580e2c";
+    provider.lookupAddress(address).then(function(address) {
+        console.log("Name: " + address);
+        // "registrar.firefly.eth"
     });
 
 -----
+
+.. _provider-calling:
 
 Contract Execution
 ==================
@@ -310,156 +415,159 @@ Contract Execution
 These are relatively low-level calls. The :ref:`Contracts API <api-contract>` should
 usually be used instead.
 
-:sup:`prototype` . call ( transaction )
+:sup:`prototype` . call ( transaction ) |nbsp| :sup:`=>` |nbsp| :sup:`Promise<hex>`
     Send the **read-only** (constant) *transaction* to a single Ethereum node and
     return a :ref:`Promise <promise>` with the result (as a :ref:`hex string <hexstring>`) of executing it.
-    (See :ref:`Transaction Requests <transactionrequest>`)
+    (See :ref:`Transaction Requests <transaction-request>`)
 
     This is free, since it does not change any state on the blockchain.
 
-:sup:`prototype` . estimateGas ( transaction )
+:sup:`prototype` . estimateGas ( transaction ) |nbsp| :sup:`=>` |nbsp| :sup:`Promise<BigNumber>`
     Send a *transaction* to a single Ethereum node and return a :ref:`Promise <promise>` with the
     estimated amount of gas required (as a :ref:`BigNumber <bignumber>`) to send it.
-    (See :ref:`Transaction Requests <transactionrequest>`)
+    (See :ref:`Transaction Requests <transaction-request>`)
 
     This is free, but only an estimate. Providing too little gas will result in a
     transaction being rejected (while still consuming all provided gas).
 
-:sup:`prototype` . sendTransaction ( signedTransaction )
+:sup:`prototype` . sendTransaction ( signedTransaction ) |nbsp| :sup:`=>` |nbsp| :sup:`Promise<TransactionResponse>`
     Send the *signedTransaction* to the **entire** Ethereum network and returns a :ref:`Promise <promise>`
-    with the transaction hash.
+    that resolves to the :ref:`Transaction Response <transaction-response>`.
+
+    If an error occurs after the netowrk **may have** received the transaction, the
+    promise will reject with the error, with the additional property ``transactionHash``
+    so that further processing may be done.
 
     **This will consume gas** from the account that signed the transaction.
 
 
-*Examples*
-----------
+.. code-block:: javascript
+    :caption: *calling constant functions*
 
-**Call (Constant) Functions** ::
+    // See: https://ropsten.etherscan.io/address/0x6fc21092da55b392b045ed78f4732bff3c580e2c
 
-    var ethers = require('ethers');
-    var provider = ethers.providers.getDefaultProvider();
+    // Setup a transaction to call the FireflyRegistrar.fee() function
 
-    // setup a transaction to call the CryptoKitties.symbol() function
-    // CryptoKitties contract address
-    var address = "0x06012c8cf97BEaD5deAe237070F9587f8E7A266d";
-    // first 8 nibbles of the hash of symbol()
-    var data = ethers.utils.id('symbol()').substring(0,10);
-    var transaction = {
-        to: address,
+    // FireflyRegistrar contract address
+    let address = "0x6fC21092DA55B392b045eD78F4732bff3C580e2c";
+
+    // First 4 bytes of the hash of "fee()" for the sighash selector
+    let data = ethers.utils.hexDataSlice(ethers.utils.id('fee()'), 0, 4);
+
+    let transaction = {
+        to: ensName,
         data: data
     }
 
-    provider.call(transaction).then(function(result) {
+    let callPromise = defaultProvider.call(transaction);
+
+    callPromise.then((result) => {
         console.log(result);
-        // '0x000000000000000000000000000000000000000000000000000000000000002'+
-        // '00000000000000000000000000000000000000000000000000000000000000002'+
-        // '434b000000000000000000000000000000000000000000000000000000000000'
+        // "0x000000000000000000000000000000000000000000000000016345785d8a0000"
+
+        console.log(ethers.utils.formatEther(result));
+        // "0.1"
     });
 
-**sendTransaction** ::
+.. code-block:: javascript
+    :caption: *sending a transaction*
 
-    var ethers = require('ethers');
-    var privateKey = '0x0123456789012345678901234567890123456789012345678901234567890123';
-    var wallet = new ethers.Wallet(privateKey);
-    wallet.provider = ethers.providers.getDefaultProvider('ropsten');
+    let privateKey = '0x0123456789012345678901234567890123456789012345678901234567890123';
+    let wallet = new ethers.Wallet(privateKey, provider);
 
-    var transaction = {
-        to: "0x88a5C2d9919e46F883EB62F7b8Dd9d0CC45bc290",
+    let transaction = {
+        to: "ricmoo.firefly.eth",
         value: ethers.utils.parseEther("0.1")
     };
 
-    var estimateGasPromise = wallet.estimateGas(transaction);
+    // Send the transaction
+    let sendTransactionPromise = wallet.sendTransaction(transaction);
 
-    estimateGasPromise.then(function(gasEstimate) {
-        console.log(gasEstimate.toString());
-        transaction.gasLimit = gasEstimate;
-
-
-        // Send the transaction
-        var sendTransactionPromise = wallet.sendTransaction(transaction);
-
-        sendTransactionPromise.then(function(transactionHash) {
-           console.log(transactionHash);
-        });
+    sendTransactionPromise.then((tx) => {
+       console.log(tx);
     });
 
 -----
+
+.. _provider-contract:
 
 Contract State
 ==============
 
-:sup:`prototype` . getCode ( addressOrName )
+:sup:`prototype` . getCode ( addressOrName ) |nbsp| :sup:`=>` |nbsp| :sup:`Promise<hex>`
     Returns a :ref:`Promise <promise>` with the bytecode (as a :ref:`hex string <hexstring>`)
     at  *addressOrName*.
 
-:sup:`prototype` . getStorageAt ( addressOrName , position [ , blockTag ] )
+:sup:`prototype` . getStorageAt ( addressOrName , position [ , blockTag :sup:`= "latest"` ] ) |nbsp| :sup:`=>` |nbsp| :sup:`Promise<hex>`
     Returns a :ref:`Promise <promise>` with the value (as a :ref:`hex string <hexstring>`) at
     *addressOrName* in *position* at *blockTag*. (See :ref:`Block Tags <blocktag>`)
 
-    default: *blockTag*\ = "latest"
-
-:sup:`prototype` . getLogs ( filter )
+:sup:`prototype` . getLogs ( filter ) |nbsp| :sup:`=>` |nbsp| :sup:`Promise< Log [ ] >`
     Returns a :ref:`Promise <promise>` with an array (possibly empty) of the logs that
     match the *filter*. (See :ref:`Filters <filter>`)
 
-*Examples*
-----------
+.. code-block:: javascript
+    :caption: *get contract code*
 
-**getCode** ::
+    let contractEnsName = 'registrar.firefly.eth';
 
-    var ethers = require('ethers');
-    var provider = ethers.providers.getDefaultProvider();
+    let codePromise = provider.getCode(contractEnsName);
 
-    var contractAddress = '0x6fC21092DA55B392b045eD78F4732bff3C580e2c';
-    var contractEnsName = 'registrar.firefly.eth';
-    var codePromise = provider.getCode(contractEnsName);
-    codePromise.then(function(result){
-       console.log('getCode by ENS name:');
+    codePromise.then((result) => {
        console.log(result);
     });
 
-    var codeByAddressPromise = provider.getCode(contractAddress);
-    codeByAddressPromise.then(function(result){
-       console.log('getCode by contract address:');
+.. code-block:: javascript
+    :caption: *get contract storage value*
+
+    let contractEnsName = 'registrar.firefly.eth';
+
+    // Position 0 in the FireflyRegistrar contract holds the ENS address
+
+    let storagePromise = provider.getStorageAt(contractEnsName, 0);
+
+    storagePromise.then((result) => {
        console.log(result);
+       // "0x000000000000000000000000112234455c3a32fd11230c42e7bccd4a84e02010"
     });
 
+.. code-block:: javascript
+    :caption: *get contract event logs*
 
-**getStorageAt** ::
+    let contractEnsName = 'registrar.firefly.eth';
 
+    let topic = ethers.utils.id("nameRegistered(bytes32,address,uint256)");
 
-    var ethers = require('ethers');
-    var provider = ethers.providers.getDefaultProvider();
-
-    var contractEnsName = 'registrar.firefly.eth';
-    var storagePromise = provider.getStorageAt(contractEnsName, 0);
-    storagePromise.then(function(result){
-       console.log(result);
-    });
-
-**getLogs** ::
-
-
-    var ethers = require('ethers');
-    var provider = ethers.providers.getDefaultProvider();
-
-    var cryptoKittiesContractAddress = '0x06012c8cf97BEaD5deAe237070F9587f8E7A266d';
-    var topic = '0x241ea03ca20251805084d27d4440371c34a0b85ff108f6bb5611248f73818b80';
-    var filter = {
-       fromBlock: 5044502,
-       address: cryptoKittiesContractAddress,
-       topics: [ topic ]
+    let filter = {
+        address: contractEnsName,
+        fromBlock: 3313425,
+        toBlock: 3313430,
+        topics: [ topic ]
     }
-    var filterPromise = provider.getLogs(filter);
-    filterPromise.then(function(result){
-       console.log(result);
+
+    provider.getLogs(filter).then((result) => {
+        console.log(result);
+        // [ {
+        //    blockNumber: 3313426,
+        //    blockHash: "0xe01c1e437ed3af9061006492cb07454eca8561479454a709809b7897f225387d",
+        //    transactionIndex: 5,
+        //    removed: false,
+        //    address: "0x6fC21092DA55B392b045eD78F4732bff3C580e2c",
+        //    data: "0x00000000000000000000000053095760c154a1531a69fc718119d14c4aa1506f" +
+        //            "000000000000000000000000000000000000000000000000016345785d8a0000",
+        //    topics: [
+        //      "0x179ef3319e6587f6efd3157b34c8b357141528074bcb03f9903589876168fa14",
+        //      "0xe625ed7b108857745d1d9889a7ae05861d8aee38e0e92fd3a31191de01c2515b"
+        //    ],
+        //    transactionHash: "0x61d641aaf3dcf4cf6bafc3e79d332d8773ea0688f87eb00f8b60c3f0050e55f0",
+        //    logIndex: 5
+        // } ]
+
     });
-
-
-
 
 -----
+
+.. _provider-events:
 
 Events
 ======
@@ -467,24 +575,24 @@ Events
 These methods allow management of callbacks on certain events on the blockchain
 and contracts. They are largely based on the `EventEmitter API`_.
 
-:sup:`prototype` . on ( eventType , callback )
+:sup:`prototype` . on ( eventType , callback ) |nbsp| :sup:`=>` |nbsp| :sup:`Provider`
     Register a callback for any future *eventType*; see below for callback parameters
 
-:sup:`prototype` . once ( eventType , callback)
+:sup:`prototype` . once ( eventType , callback) |nbsp| :sup:`=>` |nbsp| :sup:`Provider`
     Register a callback for the next (and only next) *eventType*; see below for callback parameters
 
-:sup:`prototype` . removeListener ( eventType , callback )
+:sup:`prototype` . removeListener ( eventType , callback ) |nbsp| :sup:`=>` |nbsp| :sup:`boolean`
     Unregister the *callback* for *eventType*; if the same callback is registered
     more than once, only the first registered instance is removed
 
-:sup:`prototype` . removeAllListeners ( eventType )
+:sup:`prototype` . removeAllListeners ( eventType ) |nbsp| :sup:`=>` |nbsp| :sup:`Provider`
     Unregister all callbacks for *eventType*
 
-:sup:`prototype` . listenerCount ( [ eventType ] )
+:sup:`prototype` . listenerCount ( [ eventType ] ) |nbsp| :sup:`=>` |nbsp| :sup:`number`
     Return the number of callbacks registered for *eventType*, or if ommitted, the
     total number of callbacks registered
 
-:sup:`prototype` . resetEventsBlock ( blockNumber )
+:sup:`prototype` . resetEventsBlock ( blockNumber ) |nbsp| :sup:`=>` |nbsp| :sup:`void`
     Begin scanning for events from *blockNumber*. By default, events begin at the
     block number that the provider began polling at.
 
@@ -496,20 +604,41 @@ Event Types
 
     ``callback( blockNumber )``
 
+"pending"
+    Whenever a new transaction is added to the transaction pool. This is **NOT**
+    available on Etherscan or INFURA providers and may not be reliable on any
+    provider.
+
+    ``callback( transactionHash )``
+
+"error"
+    Whenever an error occurs during an event.
+
+    ``callback( error )``
+
 any address
-    When the balance of the corresponding address changes
+    When the balance of the corresponding address changes.
 
     ``callback( balance )``
 
 any transaction hash
-    When the corresponding transaction is mined; also see
-    :ref:`Waiting for Transactions <waitForTransaction>`
+    When the corresponding transaction has been included in a block; also see
+    :ref:`Waiting for Transactions <waitForTransaction>`.
 
-    ``callback( transaction )``
+    ``callback( transactionReceipt )``
+
+a filtered event object
+    When the an event is logged by a transaction to the *address* with the
+    associated *topics*. The filtered event properties are:
+
+    - **address** --- the contract address to filter by (optional)
+    - **topics** --- the log topics to filter by (optional)
+
+    ``callback( log )``
 
 an array of topics
-    When any of the topics are triggered in a block's logs; when using the
-    :ref:`Contract API <api-contract>`, this is automatically handled;
+    When any of the topics are logs by a transaction to any address. This is
+    equivalent to using a filter object with no *address*.
 
     ``callback( log )``
 
@@ -518,53 +647,81 @@ an array of topics
 Waiting for Transactions
 ------------------------
 
-:sup:`prototype` . waitForTransaction ( transactionHash [ , timeout ] )
-    Return a :ref:`Promise <promise>` which returns the transaction once *transactionHash* is
-    mined, with an optional *timeout* (in milliseconds)
+:sup:`prototype` . waitForTransaction ( transactionHash ) |nbsp| :sup:`=>` |nbsp| :sup:`Promise<TransactionReceipt>`
+    Return a :ref:`Promise <promise>` which resolves to the
+    :ref:`Transaction Receipt <transaction-receipt>` once *transactionHash* is
+    mined.
 
-*Examples*
-----------
+.. code-block:: javascript
+    :caption: *new blocks*
 
-::
-
-    // Get notified on every new block
-    provider.on('block', function(blockNumber) {
+    provider.on('block', (blockNumber) => {
         console.log('New Block: ' + blockNumber);
     });
 
-    // Get notified on account balance change
-    provider.on('0x46Fa84b9355dB0708b6A57cd6ac222950478Be1d', function(balance) {
+.. code-block:: javascript
+    :caption: *account balance changes*
+
+    provider.on('0x46Fa84b9355dB0708b6A57cd6ac222950478Be1d', (balance) => {
         console.log('New Balance: ' + balance);
     });
 
-    // Get notified when a transaction is mined
-    provider.once(transactionHash, function(transaction) {
-        console.log('Transaction Minded: ' + transaction.hash);
-        console.log(transaction);
+.. code-block:: javascript
+    :caption: *transaction mined*
+
+    provider.once(transactionHash, (receipt) => {
+        console.log('Transaction Minded: ' + receipt.hash);
+        console.log(receipt);
     );
 
-    // OR equivalently the waitForTransaction() returns a Promise
+    // ... OR ...
 
-    provider.waitForTransaction(transactionHash).then(function(transaction) {
-        console.log('Transaction Mined: ' + transaction.hash);
-        console.log(transaction);
+    provider.waitForTransaction(transactionHash).then((receipt) => {
+        console.log('Transaction Mined: ' + receipt.hash);
+        console.log(receipt);
     });
 
+.. code-block:: javascript
+    :caption: *a filtered event has been logged*
 
-    // Get notified when a contract event is logged
-    var eventTopic = '0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef';
-    provider.on([ eventTopic ], function(log) {
-        console.log('Event Log');
-        console.log(log);
+    let contractEnsName = 'registrar.firefly.eth';
+
+    let topic = ethers.utils.id("nameRegistered(bytes32,address,uint256)");
+
+    let filter = {
+        address: contractEnsName,
+        topics: [ topic ]
+    }
+
+    provider.on(filter, (result) => {
+        console.log(result);
+        // {
+        //    blockNumber: 3606106,
+        //    blockHash: "0x878aa7059c93239437f66baeec82332dcb2f9288bcdf6eb1ff3ba6998cdf8f69",
+        //    transactionIndex: 6,
+        //    removed: false,
+        //    address: "0x6fC21092DA55B392b045eD78F4732bff3C580e2c",
+        //    data: "0x00000000000000000000000006b5955a67d827cdf91823e3bb8f069e6c89c1d6" +
+        //            "000000000000000000000000000000000000000000000000016345785d8a0000",
+        //    topics: [
+        //      "0x179ef3319e6587f6efd3157b34c8b357141528074bcb03f9903589876168fa14",
+        //      "0x90a4d0958790016bde1de8375806da3be227ff48e611aefea36303fb86bca5ad"
+        //    ],
+        //    transactionHash: "0x0d6f43accb067ca8e391666f37f8e8ad75f88ebd8036c9166fd2d0b93b214d2e",
+        //    logIndex: 6
+        // }
     });
+
 
 -----
 
-Objects
-=======
+Objects and Types
+=================
 
 There are several common objects and types that are commonly used as input parameters or
 return types for various provider calls.
+
+-----
 
 .. _blocktag:
 
@@ -582,12 +739,15 @@ a Number or :ref:`hex string <hexstring>`:
 "pending":
     The block that is currently being mined.
 
+-----
+
 .. _blockresponse:
 
 Block Responses
 ---------------
 
-::
+.. code-block:: javascript
+    :caption: *Example*
 
     {
         parentHash: "0x3d8182d27303d92a2c9efd294a36dac878e1a9f7cb0964fa0f789fa96b5d0667",
@@ -611,17 +771,55 @@ Block Responses
         ]
     }
 
-.. _transactionrequest:
+-----
+
+.. _network:
+
+Network
+-------
+
+A network repsents various properties of a network, such as mainnet (i.e. "homestead") or
+one of the testnets (e.g. "ropsten", "rinkeby" or "kovan") or alternative networks
+(e.g. "classic"). A Network has the following properties:
+
+    - *name* --- the name of the network (e.g. "homestead", "rinkeby")
+    - *chainId* --- the chain ID (network ID) of the connected network
+    - *ensAddress* --- the address of ENS if it is deployed to the network, otherwise *null*
+
+If a network does not have the ENS contract deployed to it, names cannot be resolved to addresses.
+
+.. code-block:: javascript
+    :caption: *get a standard network*
+
+    let network = ethers.providers.getNetwork('homestead');
+    // {
+    //    chainId: 1,
+    //    ensAddress: "0x314159265dd8dbb310642f98f50c066173c1259b",
+    //    name: "homestead"
+    // }
+
+.. code-block:: javascript
+    :caption: *a custom development network*
+
+    let network = {
+        chainId: 1337,
+        name: "dev"
+    }
+
+-----
+
+.. _transaction-request:
 
 Transaction Requests
 --------------------
 
 Any property which accepts a number may also be specified as a :ref:`BigNumber <bignumber>`
-or :ref:`hex string <hexstring>`.
+or :ref:`hex string <hexstring>`. Any property may also be given as a :ref:`Promise <promise>`
+which resolves to the expected type.
 
-::
+.. code-block:: javascript
+    :caption: *Example*
 
-    // Example:
     {
         // Required unless deploying a contract (in which case omit)
         to: addressOrName,  // the target address or ENS name
@@ -637,29 +835,31 @@ or :ref:`hex string <hexstring>`.
         chainId: 3          // the network ID; usually added by a signer
     }
 
+-----
 
-.. _transactionresponse:
+.. _transaction-response:
 
 Transaction Response
 --------------------
 
-::
+.. code-block:: javascript
+    :caption: *Example*
 
-    // Example:
     {
         // Only available for mined transactions
         blockHash: "0x7f20ef60e9f91896b7ebb0962a18b8defb5e9074e62e1b6cde992648fe78794b",
         blockNumber: 3346463,
-        transactionIndex: 51,
+        timestamp: 1489440489,
 
         // Exactly one of these will be present (send vs. deploy contract)
+        // They will always be a properly formatted checksum address
         creates: null,
         to: "0xc149Be1bcDFa69a94384b46A1F91350E5f81c1AB",
 
         // The transaction hash
         hash: "0xf517872f3c466c2e1520e35ad943d833fdca5a6739cfea9e686c4c1b3ab1022e",
 
-        // See above (Transaction Requests) for these explained
+        // See above "Transaction Requests" for details
         data: "0x",
         from: "0xEA674fdDe714fd979de3EdF0F56AA9716B898ec8",
         gasLimit: utils.bigNumberify("90000"),
@@ -667,30 +867,32 @@ Transaction Response
         nonce: 0,
         value: utils.parseEther(1.0017071732629267),
 
-        // The network ID (or chain ID); 0 indicates replay-attack vulnerable
+        // The chain ID; 0 indicates replay-attack vulnerable
         // (eg. 1 = Homestead mainnet, 3 = Ropsten testnet)
-        networkId: 1,
+        chainId: 1,
 
-        // The signature of the transaction
+        // The signature of the transaction (TestRPC may fail to include these)
         r: "0x5b13ef45ce3faf69d1f40f9d15b0070cc9e2c92f3df79ad46d5b3226d7f3d1e8",
         s: "0x535236e497c59e3fba93b78e124305c7c9b20db0f8531b015066725e4bb31de6",
         v: 37,
 
-        // The raw transaction
+        // The raw transaction (TestRPC may be missing this)
         raw: "0xf87083154262850500cf6e0083015f9094c149be1bcdfa69a94384b46a1f913" +
                "50e5f81c1ab880de6c75de74c236c8025a05b13ef45ce3faf69d1f40f9d15b0" +
                "070cc9e2c92f3df79ad46d5b3226d7f3d1e8a0535236e497c59e3fba93b78e1" +
                "24305c7c9b20db0f8531b015066725e4bb31de6"
     }
 
-.. _transactionReceipt:
+-----
+
+.. _transaction-receipt:
 
 Transaction Receipts
 --------------------
 
-::
+.. code-block:: javascript
+    :caption: *Example*
 
-    // Example
     {
         transactionHash: "0x7dec07531aae8178e9d0b0abbd317ac3bb6e8e0fd37c2733b4e0d382ba34c5d2",
 
@@ -708,7 +910,7 @@ Transaction Receipts
         cumulativeGasUsed: utils.bigNumberify("42000"),
         gasUsed: utils.bigNumberify("21000"),
 
-        // Logs
+        // Logs (an Array of Logs)
         log: [ ],
         logsBloom: "0x00" ... [ 256 bytes of 0 ] ... "00",
 
@@ -724,6 +926,39 @@ Transaction Receipts
         // status: 1
     }
 
+-----
+
+.. _log:
+
+Log
+---
+
+.. code-block:: javascript
+    :caption: *Example*
+
+    {
+        // The block this log was emitted by
+        blockNumber: 
+        blockHash:
+
+        // The transaction this log was emiited by
+        transactionHash:
+        transactionIndex:
+        logIndex:
+
+        // Whether the log has been removed (due to a chain re-org)
+        removed: false,
+
+        // The contract emitting the log
+        address:
+
+        // The indexed data (topics) and non-indexed data (data) for this log
+        topics: []
+        data: 
+    }
+
+-----
+
 .. _filter:
 
 Filters
@@ -732,11 +967,11 @@ Filters
 Filtering on topics supports a `somewhat complicated`_ specification, however,
 for the vast majority of filters, a single topic is usually sufficient (see the example below).
 
-The *EtherscanProvider* only supports a single topic.
+The *EtherscanProvider* currently only supports a single topic.
 
-::
+.. code-block:: javascript
+    :caption: *Example*
 
-    // Example
     {
         // Optional; The range of blocks to limit querying (See: Block Tags above)
         fromBlock: "latest",
@@ -749,10 +984,14 @@ The *EtherscanProvider* only supports a single topic.
         topics: [ topic1 ]
     }
 
+@TODO: Link to cookbook entry for filtering ERC-20 events for an address
+
 -----
 
 Provider Specific Extra API Calls
 =================================
+
+.. _provider-etherscan-extra:
 
 Etherscan
 ---------
@@ -760,27 +999,26 @@ Etherscan
 :sup:`prototype` . getEtherPrice ( )
     Returns a :ref:`Promise <promise>` with the price of ether in USD.
 
-:sup:`prototype` . getHistory ( addressOrName [ , startBlock [ , endBlock ] ] )
-    Returns a :ref:`Promise <promise>` with an array of :ref:`Transaction Responses <transactionresponse>`
+:sup:`prototype` . getHistory ( addressOrName [ , startBlock :sup:`= 0` [ , endBlock :sup:`= "latest"` ] ] )
+    Returns a :ref:`Promise <promise>` with an array of :ref:`Transaction Responses <transaction-response>`
     for each transaction to or from *addressOrName* between *startBlock* and *endBlock* (inclusive).
 
-**Examples**
+.. code-block:: javascript
+    :caption: *a filtered event has been logged*
 
-::
-
-    var provider = new ethers.providers.EtherscanProvider();
+    let etherscanProvider = new ethers.providers.EtherscanProvider();
 
     // Getting the current Ethereum price
-    provider.getEtherPrice().then(function(price) {
+    etherscanProvider.getEtherPrice().then(function(price) {
         console.log("Ether price in USD: " + price);
     });
 
 
     // Getting the transaction history of an address
-    var address = '0xb2682160c482eB985EC9F3e364eEc0a904C44C23';
-    var startBlock = 3135808;
-    var endBlock = 5091477;
-    provider.getHistory(address, startBlock, endBlock).then(function(history) {
+    let address = '0xb2682160c482eB985EC9F3e364eEc0a904C44C23';
+    let startBlock = 3135808;
+    let endBlock = 5091477;
+    etherscanProvider.getHistory(address, startBlock, endBlock).then(function(history) {
         console.log(history);
         // [
         //   {
@@ -796,7 +1034,7 @@ Etherscan
         //     nonce: 25,
         //     data: '0x',
         //     creates: null,
-        //     networkId: 0
+        //     chainId: 0
         //   },
         //   {
         //     hash: '0x7c10f2e7125a1fa5e37b54f5fac5465e8d594f89ff97916806ca56a5744812d9',
@@ -805,31 +1043,84 @@ Etherscan
         // ]
     });
 
+.. _provider-jsonrpc-extra:
 
-Web3Provider
-------------
+JsonRpcProvider
+---------------
 
-:sup:`prototype` . listAccounts ( )
-    Returns a :ref:`Promise <promise>` with a list of all accounts the node connected
-    to this Web3 controls.
+:sup:`prototype` . send ( method , params ) |nbsp| :sup:`=>` |nbsp| :sup:`Promise<any>`
+    Send the JSON-RPC *method* with *params*. This is useful for calling
+    non-standard or less common JSON-RPC methods. A :ref:`Promise <promise>` is
+    returned which will resolve to the parsed JSON result.
 
-:sup:`prototype` . getSigner( [ address ] )
-    Returns a :ref:`Signer <custom-signer>` that uses an account on the node
-    the Web3 object is connected to. If no address is specified, the first
-    account on the node is used.
+:sup:`prototype` . listAccounts ( ) |nbsp| :sup:`=>` |nbsp| :sup:`Promise<Address [ ] >`
+    Returns a :ref:`Promise <promise>` with a list of all account addresses the
+    node connected to this Web3 controls.
+
+:sup:`prototype` . getSigner( [ indexOrAddress ] ) |nbsp| :sup:`=>` |nbsp| :sup:`JsonRpcSigner`
+    Returns a :ref:`JsonRpcSigner <signer-jsonrpc>` attached to an account on the
+    Ethereum node the Web3 object is connected to. If *indexOrAddress* is not specified,
+    the first account on the node is used.
 
 
-**Examples**
+.. code-block:: javascript
+    :caption: *send vendor specific JSON-RPC API*
 
-::
+    let hash = "0x2ddf6dd2ec23adf525dac59d7c9189b25b172d679aad951e59e232045f2c811f";
+    jsonRpcProvider.send('debug_traceTransaction', [ hash ]).then((result) => {
+        console.log(result);
+    });
 
-    web3Provider.listAccounts().then(function(accounts) {
-        var signer = web3Provider.getSigner(accounts[1]);
+.. code-block:: javascript
+    :caption: *list accounts and load the second account*
+
+    // Get a signer for the account at index 1
+    jsonRpcProvider.listAccounts().then((accounts) => {
+        let signer = jsonRpcProvider.getSigner(accounts[1]);
         console.log(signer);
     });
 
+.. _signer-jsonrpc:
+
+JsonRpcSigner
+-------------
+
+An account from a JSON-RPC API connection the conforms to the :ref:`Signer API <signer>`.
+The :ref:`getSigner <provider-jsonrpc-extra>` method of a JsonRpcProvider should be
+used to instantiate these.
+
+:sup:`prototype` . provider
+    The provider that this Signer is connected to.
+
+:sup:`prototype` . getAddress ( ) |nbsp| :sup:`=>` |nbsp| :sup:`Promise<Address>`
+    Returns a :ref:`Promise <promise>` that resolves to the account address.
+
+:sup:`prototype` . getBalance ( [ blockTag :sup:`= "latest"` ] ) |nbsp| :sup:`=>` |nbsp| :sup:`Promise<BigNumber>`
+    Returns a :ref:`Promise <promise>` for the account balance.
+
+:sup:`prototype` . getTransactionCount ( [ blockTag :sup:`= "latest"` ] ) |nbsp| :sup:`=>` |nbsp| :sup:`Promise<number>`
+    Returns a :ref:`Promise <promise>` for the account transaction count. This
+    can be used to determine the next nonce to use for a transaction.
+
+:sup:`prototype` . sendTransaction ( [ transactionRequest ] ) |nbsp| :sup:`=>` |nbsp| :sup:`Promise<TransactionResponse>`
+    Returns a :ref:`Promise <promise>` that resolves to the Transaction Response for
+    the sent transaction.
+
+    If an error occurs after the netowrk **may have** received the transaction, the
+    promise will reject with the error, with the additional property ``transactionHash``
+    so that further processing may be done.
+
+:sup:`prototype` . signMessage ( message ) |nbsp| :sup:`=>` |nbsp| :sup:`Promise<hex>`
+    Returns a :ref:`Promise <promise>` that resolves the signature of a signed message, in the
+    :ref:`Flat Format <signature>`.
+
+:sup:`prototype` . unlock ( password ) |nbsp| :sup:`=>` |nbsp| :sup:`Promise<boolean>`
+    Returns a :ref:`Promise <promise>` the resolves to true or false, depending
+    on whether the account unlock was successful.
+
 -----
 
+.. _Ethereum Naming Service: https://ens.domains
 .. _Etherscan: https://etherscan.io/apis
 .. _web service API: https://etherscan.io/apis
 .. _INFURA: https://infura.io
@@ -837,7 +1128,7 @@ Web3Provider
 .. _Geth: https://geth.ethereum.org
 .. _JSON-RPC API: https://github.com/ethereum/wiki/wiki/JSON-RPC
 .. _EventEmitter API: https://nodejs.org/dist/latest-v6.x/docs/api/events.html
-.. _replay attacks: https://github.com/ethereum/EIPs/issues/155
+.. _replay protection: https://github.com/ethereum/EIPs/issues/155
 .. _somewhat complicated: https://github.com/ethereum/wiki/wiki/JSON-RPC#a-note-on-specifying-topic-filters
 .. _HTTPProvider: https://github.com/ethereum/web3.js/blob/develop/lib/web3/httpprovider.js
 .. _IPCProvider: https://github.com/ethereum/web3.js/blob/develop/lib/web3/ipcprovider.js
