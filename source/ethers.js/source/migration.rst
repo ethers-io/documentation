@@ -23,7 +23,7 @@ seamless and reduces the amount of low-level understanding that is required,
 such as the details of how *init transaction* behave.
 
 More complex and complete objects are also returned through-out the
-process, so there are far les calls to utility functions after a deployment
+process, so there are far less calls to utility functions after a deployment
 required to populate databases and track status.
 
 .. code-block:: javascript
@@ -92,9 +92,9 @@ required to populate databases and track status.
     :caption: *Deploy a Contract with async/await --- ethers v4*
 
     async function() {
-        let abstractContract = new ethers.Contract(null, abi, signer);
+        let factory = new ethers.ContractFactory(abi, bytecode, signer);
 
-        let contract = await abstractContract.deploy(bytecode, arg1, arg2);
+        let contract = await factory.deploy(arg1, arg2);
 
         try {
             await contract.deployed();
@@ -115,12 +115,9 @@ required to populate databases and track status.
     // actually deploy, you can much more easily just use the Interface
     // object without the need for a provider or signer.
 
-    let iface = new ethers.Interface(abi);
-    let deployFunc = iface.deployFunction;
+    let factory = new ethers.ContractFactory(abi, bytecode);
 
-    let tx = {
-        data: deploy.encode(bytecode, [arg1, arg2])
-    }
+    let tx = factory.getDeployTransaction(arg1, arg2);
 
 -----
 

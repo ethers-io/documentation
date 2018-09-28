@@ -188,7 +188,7 @@ Provider
 
 .. _provider-etherscan-properties:
 
-EtherscanProvider :sup:`( inherits from BaseProvider )`
+EtherscanProvider :sup:`( inherits from Provider )`
 -------------------------------------------------------
 
 :sup:`prototype` . apiToken
@@ -205,7 +205,7 @@ InfuraProvider :sup:`( inherits from JsonRpcProvider )`
 
 .. _provider-jsonrpc-properties:
 
-JsonRpcProvider :sup:`( inherits from BaseProvider )`
+JsonRpcProvider :sup:`( inherits from Provider )`
 -----------------------------------------------------
 
 :sup:`prototype` . connection
@@ -230,7 +230,7 @@ Web3Provider :sup:`( inherits from JsonRpcProvider )`
 
 .. _provider-fallback-properties:
 
-FallbackProvider :sup:`( inherits from BaseProvider )`
+FallbackProvider :sup:`( inherits from Provider )`
 ------------------------------------------------------
 
 :sup:`prototype` . providers
@@ -294,7 +294,7 @@ Account
     let address = "0x02F024e0882B310c6734703AB9066EdD3a10C6e0";
 
     provider.getTransactionCount(address).then((transactionCount) => {
-        console.log("Total Transactions Ever Send: " + transactionCount);
+        console.log("Total Transactions Ever Sent: " + transactionCount);
     });
 
 -----
@@ -311,7 +311,7 @@ Blockchain Status
     Returns a :ref:`Promise <promise>` with the current gas price (as a :ref:`BigNumber <bignumber>`).
 
 :sup:`prototype` . getBlock ( blockHashOrBlockNumber ) |nbsp| :sup:`=>` |nbsp| :sup:`Promise<Block>`
-    Returns a :ref:`Promise <promise>` with the block at *blockHashorBlockNumber*. (See: :ref:`Block Responses <blockresponse>`)
+    Returns a :ref:`Promise <promise>` with the block at *blockHashOrBlockNumber*. (See: :ref:`Block Responses <blockresponse>`)
 
 :sup:`prototype` . getTransaction ( transactionHash ) |nbsp| :sup:`=>` |nbsp| :sup:`Promise<TransactionResponse>`
     Returns a :ref:`Promise <promise>` with the transaction with *transactionHash*. (See: :ref:`Transaction Responses <transaction-response>`)

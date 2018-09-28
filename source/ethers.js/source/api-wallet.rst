@@ -45,7 +45,7 @@ new :sup:`Wallet` ( privateKey [ , provider ] )
     the *wordlist*. The default language is English (en).
 
     In the browserified ``dist/ethers.min.js`` only the English wordlist is
-    avaialble. Each additional wordlist may be included by adding a ``<script>``
+    available. Each additional wordlist may be included by adding a ``<script>``
     for the ``dist/wordlist-*.js``
 
     The current supported wordlists are:
@@ -145,11 +145,14 @@ Prototype
     The private key of a wallet; keep this secret
 
 :sup:`prototype` . provider
-    Optional; a connected :ref:`Provider <provider>` which allows the wallet to
-    connect to the Ethereum network to query its state and send transactions.
+    A connected :ref:`Provider <provider>` which allows the wallet to
+    connect to the Ethereum network to query its state and send transactions,
+    or null if no provider is connected.
 
     To change the provider, use the :ref:`connect <wallet-connect>` method, which will return
     a **new instance** of the Wallet connected to the provider.
+
+    
 
 :sup:`prototype` . mnemonic
     The mnemonic phrase for this wallet, or null if the mnemonic is unknown.

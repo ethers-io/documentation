@@ -39,7 +39,7 @@ Prototype
 
 :sup:`prototype` . decode ( [ names , ] types , data ) |nbsp| :sup:`=>` |nbsp| :sup:`Result`
     Returns an Object by parsing *data* assuming *types*, with each parameter
-    accessible as apositional parameters. If *names* is provided, each
+    accessible as a positional parameters. If *names* is provided, each
     parameter is also accessible by its name. Throws if *data* is invalid
     for the *types*.
 
@@ -97,7 +97,7 @@ Deriving Child Nodes
 :sup:`prototype` **. derivePath** ( path ) |nbsp| :sup:`=>` |nbsp| :sup:`HDNode`
     Derive the path from this node. Path is slash (**/**) delimited path components.
     The first component may be "m" for master (which enforces the starting node is
-    infact a master node) and each subsequent path component should be a positive
+    in fact a master node) and each subsequent path component should be a positive
     integer (up to 31 bits), which can optionally include an apostrophe (**'**) to
     indicate hardened derivation for that path components. See below for some examples.
 

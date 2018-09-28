@@ -6,7 +6,7 @@ Contracts
 *********
 
 A Contract is an abstraction of an executable program on the Ethereum Blockchain. A
-Contract has code (called byte code) as well as allocted long-term memory (called
+Contract has code (called byte code) as well as allocated long-term memory (called
 storage). Every deployed Contract has an address, which is used to connect to it
 so that it may be sent messages to call its methods.
 
