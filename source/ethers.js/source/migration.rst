@@ -3,12 +3,15 @@
 Migration Guides
 ****************
 
-test
+Migrating from Web3 to ethers v4
+================================
+
+Todo: This is coming soon.
 
 -----
 
-Migrating ethers v3 to ethers v4
-================================
+Migrating from ethers v3 to ethers v4
+=====================================
 
 A lot of the functionality has remained the same, but there has been some
 slight refactoring and improved paradigms.

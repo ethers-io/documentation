@@ -15,6 +15,7 @@ If there is a simple recipe you would like added, please send suggestions to sup
    :maxdepth: 2
 
    cookbook-accounts
+   cookbook-providers
    cookbook-signing
    cookbook-react
 
