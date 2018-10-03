@@ -24,6 +24,9 @@ network as a standard Web3 Provider.
 
     const provider = new ethers.providers.Web3Provider(web3.currentProvider);
 
+    // There is only ever up to one account in MetaMask exposed
+    const signer = provider.getSigner();
+
 -----
 
 TestRPC / Ganache
@@ -53,6 +56,10 @@ temporary instances of an Ethereum node for testing.
 
     const provider = new ethers.providers.JsonRpcProvider(url);
 
+    // Getting the accounts
+    const signer0 = provider.getSigner(0);
+    const signer1 = provider.getSigner(1);
+
 .. code-block:: javascript
     :caption: *Using an In-Process Ganache Instance*
 
@@ -63,6 +70,10 @@ temporary instances of an Ethereum node for testing.
 
     const ganache = Ganache.provider(ganacheOptions);
     const provider = new ethers.providers.Web3Provider(ganache);
+
+    // Getting the accounts
+    const signer0 = provider.getSigner(0);
+    const signer1 = provider.getSigner(1);
 
 -----
 
