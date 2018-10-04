@@ -32,15 +32,13 @@ Static Properties
 Prototype
 ---------
 
-:sup:`prototype` . encode ( [ names , ] types , values ) |nbsp| :sup:`=>` |nbsp| :sup:`hex`
+:sup:`prototype` . encode ( types , values ) |nbsp| :sup:`=>` |nbsp| :sup:`hex`
     Returns a :ref:`hex string <hexstring>` of the *values* encoded as the *types*.
-    If names is provided, *values* may contain named keys for tuples, otherwise
-    each tuple expects an Array. Throws if a value is invalid for the type.
+    Throws if a value is invalid for the type.
 
-:sup:`prototype` . decode ( [ names , ] types , data ) |nbsp| :sup:`=>` |nbsp| :sup:`Result`
+:sup:`prototype` . decode ( types , data ) |nbsp| :sup:`=>` |nbsp| :sup:`Result`
     Returns an Object by parsing *data* assuming *types*, with each parameter
-    accessible as a positional parameters. If *names* is provided, each
-    parameter is also accessible by its name. Throws if *data* is invalid
+    accessible as a positional parameters. Throws if *data* is invalid
     for the *types*.
 
 
@@ -65,10 +63,10 @@ See the `BIP 39 Specification`_ to learn more about Mnemonic Phrases.
 Creating Instances
 ------------------
 
-:sup:`ethers . HDNode` **. fromMnemonic** ( mnemonic ) |nbsp| :sup:`=>` |nbsp| :sup:`HDNode`
+:sup:`ethers . utils . HDNode` **. fromMnemonic** ( mnemonic ) |nbsp| :sup:`=>` |nbsp| :sup:`HDNode`
     Create an HDNode from a *mnemonic* phrase.
 
-:sup:`ethers . HDNode` **. fromSeed** ( seed ) |nbsp| :sup:`=>` |nbsp| :sup:`HDNode`
+:sup:`ethers . utils . HDNode` **. fromSeed** ( seed ) |nbsp| :sup:`=>` |nbsp| :sup:`HDNode`
     Create an HDNode from a seed.
 
 
@@ -105,24 +103,24 @@ Deriving Child Nodes
 Static Methods
 --------------
 
-:sup:`ethers . HDNode` **. mnemonicToEntropy** ( mnemonic ) |nbsp| :sup:`=>` |nbsp| :sup:`hex`
+:sup:`ethers . utils . HDNode` **. mnemonicToEntropy** ( mnemonic ) |nbsp| :sup:`=>` |nbsp| :sup:`hex`
     Convert a *mnemonic* to its binary entropy. (throws an error if the checksum
     is invalid)
 
-:sup:`ethers . HDNode` **. entropyToMnemonic** ( entropy ) |nbsp| :sup:`=>` |nbsp| :sup:`string`
+:sup:`ethers . utils . HDNode` **. entropyToMnemonic** ( entropy ) |nbsp| :sup:`=>` |nbsp| :sup:`string`
     Convert the binary *entropy* to the mnemonic phrase.
 
-:sup:`ethers . HDNode` **. mnemonicToSeed** ( mnemonic ) |nbsp| :sup:`=>` |nbsp| :sup:`hex`
+:sup:`ethers . utils . HDNode` **. mnemonicToSeed** ( mnemonic ) |nbsp| :sup:`=>` |nbsp| :sup:`hex`
     Compute the BIP39 seed from *mnemonic*.
 
-:sup:`ethers . HDNode` **. isValidMnemonic** ( string ) |nbsp| :sup:`=>` |nbsp| :sup:`boolean`
+:sup:`ethers . utils . HDNode` **. isValidMnemonic** ( string ) |nbsp| :sup:`=>` |nbsp| :sup:`boolean`
     Returns true if and only if the string is a valid mnemonic (including
     the checksum)
 
 .. code-block:: javascript
     :caption: *HDNode derivation*
 
-    let HDNode = require('ethers').HDNode;
+    let HDNode = require('ethers').utils.HDNode;
 
     let mnemonic = "radar blur cabbage chef fix engine embark joy scheme fiction master release";
 
@@ -144,7 +142,7 @@ and decoding the parameters to pass in and results returned.
 Creating an Instance
 --------------------
 
-new :sup:`ethers` . Interface ( abi )
+new :sup:`ethers . utils` . Interface ( abi )
     Returns a new instance and populates the properties with the ABI constructor,
     methods and events. The *abi* may be either a JSON string or the parsed JSON
     Object.
@@ -450,7 +448,7 @@ computes a public key from a digest and a signature.
 Creating Instances
 ------------------
 
-new :sup:`ethers` . SigningKey ( privateKey )
+new :sup:`ethers . utils` . SigningKey ( privateKey )
     Create a new SigningKey and compute the corresponding public key and address.
     A private key may be a any :ref:`hex string <hexstring>` or an
     :ref:`Arrayish <arrayish>` representing 32 bytes.

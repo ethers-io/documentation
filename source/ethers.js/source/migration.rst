@@ -277,6 +277,16 @@ so while there will probably be changes required, if you use this class, the
 complexity and size of your code should be reduced.
 
 .. code-block:: javascript
+    :caption: *Interface --- ethers v3*
+
+    let iface = ethers.Interface(address, abi, providerOrSigner);
+
+.. code-block:: javascript
+    :caption: *Interface --- ethers v4*
+
+    let iface = ethers.utils.Interface(address, abi, providerOrSigner);
+
+.. code-block:: javascript
     :caption: *Function Description --- ethers v3*
 
     let address = "0x8B40a2E27C5E87aa66DfA7F80BF675176F49DCA7";
@@ -507,10 +517,10 @@ Waiting for Transactions
 ------------------------
 
 In v3, the ``transaction.wait()`` returned a Promise which would resolve to the
-**TransactionResponse** once it was mined.
+**TransactionResponse** once it is mined.
 
 In v4, the ``transaction.wait()`` returned a Promise which would resolve to the
-**TransactionReceipt** once it was mined.
+**TransactionReceipt** once it is mined.
 
 -----
 
