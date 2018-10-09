@@ -36,4 +36,4 @@ distribution network) should suffice::
 -----
 
 .. _npm is installed: https://nodejs.org/en/
-.. _this script: https://cdn.ethers.io/scripts/ethers-v4.0.min.js
+.. _this script: https://cdn.ethers.io/scripts/ethers-v4.min.js
