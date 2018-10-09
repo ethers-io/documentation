@@ -444,6 +444,58 @@ set of values. The ``null`` matches any value.
 
 -----
 
+.. _contract-overrides:
+
+Overrides
+=========
+
+Every Contract method may take one additional (optional) parameter which specifies the
+transaction (or call) overrides.
+
+.. code-block:: javascript
+    :caption: *Contract Transaction Overrides*
+
+    // All overrides are optional
+    let overrides = {
+
+        // The maximum units of gas for the transaction to use
+        gasLimit: 23000,
+
+        // The price (in wei) per unit of gas
+        gasPrice: utils.parseUnits('9.0', 'gwei'),
+
+        // The nonce to use inthe transaction
+        nonce: 123,
+
+        // The amount to send with the transaction (i.e. msg.value)
+        value: utils.parseEther('1.0'),
+
+        // The chain ID (or network ID) to use
+        chainId: 1
+
+    };
+
+    // Solidity: function someFunction(address addr) public
+    let tx = contract.someFunction(addr, overrides)
+
+.. code-block:: javascript
+    :caption: *Contract Call Overrides*
+
+    let overrides = {
+
+        // The address to execute the call as
+        from: "0x0123456789012345678901234567890123456789",
+
+        // The maximum units of gas for the transaction to use
+        gasLimit: 23000,
+
+    };
+
+    // Solidity: function someFunction(address addr) public pure returns (bytes32 result)
+    let result = contract.someFunction(addr, overrides)
+
+-----
+
 .. _contract-event-emitter:
 
 Event Emitter
