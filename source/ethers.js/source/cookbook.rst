@@ -15,8 +15,10 @@ If there is a simple recipe you would like added, please send suggestions to sup
    :maxdepth: 2
 
    cookbook-accounts
+   cookbook-contracts
    cookbook-providers
    cookbook-signing
+   cookbook-testing
    cookbook-react
 
 -----
