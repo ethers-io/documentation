@@ -67,7 +67,7 @@ place it in another account, *newAddress*.
         let code = await provider.getCode(newAddress);
         if (code !== '0x') { throw new Error('Cannot sweep to a contract'); }
 
-        // Get teh current balance
+        // Get the current balance
         let balance = await wallet.getBalance();
 
         // Normally we would let the Wallet populate this for us, but we
@@ -176,7 +176,7 @@ through another Provider, but dump all data going back and forth.
     }
     inherits(DebugProvider, ethers.providers.BaseProvider);
 
-    // This should return a Promise (and may throw erros)
+    // This should return a Promise (and may throw errors)
     // method is the method name (e.g. getBalance) and params is an
     // object with normalized values passed in, depending on the method
     DebugProvider.prototype.perform = function(method, params) {
