@@ -51,7 +51,7 @@ HDNode
 
 A *Hierarchical Deterministic Wallet* represents a large tree of private keys
 which can reliably be reproduced from an initial seed. Each node in the tree
-is represended by an HDNode which can be descended into.
+is represented by an HDNode which can be descended into.
 
 A *mnemonic phrase* represents a simple way to generate the initial seed.
 
@@ -86,7 +86,7 @@ Prototype
     The index (from the parent) of this node (0 for the master node).
 
 :sup:`prototype` **. depth**
-    The depth within th hierarchy of this node.
+    The depth within the hierarchy of this node.
 
 
 Deriving Child Nodes

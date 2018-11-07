@@ -10,7 +10,7 @@ Signing a String Message
 ========================
 
 By allowing a user to sign a string, which can be verified on-chain, interesting
-forms of authenitcation on-chain can be acheived. This is a quick example of how
+forms of authentication on-chain can be achieved. This is a quick example of how
 an arbitrary string can be signed by a private key, and verified on-chain. The
 Contract can be called by another Contract, for example, before unlocking
 functionality by the caller.
@@ -137,7 +137,7 @@ Signing a digest can be far more space efficient than signing an arbitrary
 string (as you probably notice when comparing the length of the Solidity
 source code), however, with this method, many Wallet UI would not be able to
 fully inform the user what they are about to sign, so this method should only
-be used in quite specifiy cases, such as in custom Wallet applications.
+be used in quite specific cases, such as in custom Wallet applications.
 
 .. code-block:: javascript
     :caption: *Solidity Contract*

@@ -98,7 +98,7 @@ Big Numbers
 
 A BigNumber is an immutable object which allow accurate math operations
 on values larger than :ref:`JavaScript can accurately handle <ieee754>`
-can safely handle. Also see: :ref:`Contants <constants>`
+can safely handle. Also see: :ref:`Constants <constants>`
 
 :sup:`prototype` . add ( otherValue ) |nbsp| :sup:`=>` |nbsp| :sup:`BigNumber`
     Return a new BigNumber of this plus *otherValue*.

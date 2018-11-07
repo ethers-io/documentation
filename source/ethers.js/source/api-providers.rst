@@ -289,7 +289,7 @@ Account
     });
 
 .. code-block:: javascript
-    :caption: *get the transactin count of an account*
+    :caption: *get the transaction count of an account*
 
     let address = "0x02F024e0882B310c6734703AB9066EdD3a10C6e0";
 

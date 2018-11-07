@@ -65,7 +65,7 @@ required to populate databases and track status.
     factory.deploy(arg1, arg2, overrides).then((contract) => {
         // The contract is returned immediately; it has not been mined yet
 
-        // The contract knowns its address (before it is even mined)
+        // The contract known its address (before it is even mined)
         console.log(contract.address);
 
         // You can access the in-flight transaction that is currently waiting to be mined
@@ -148,7 +148,7 @@ Events now behave like a modern JavaScript Event Emitter, rather than a 1995
 web browser.
 
 The events now play nicer with the arrow operator (i.e. ``() => { ... }``),
-since rather than modfying the `this` inside the callbacks, an additional
+since rather than modifying the `this` inside the callbacks, an additional
 rich object is passed along.
 
 .. code-block:: javascript
@@ -227,7 +227,7 @@ rich object is passed along.
 If there are multiple events with the same name:
 
 .. code-block:: javascript
-    :caption: *Event Name Collission --- ethers v4*
+    :caption: *Event Name Collision --- ethers v4*
 
     // Solidity
     // - event SomeEvent(address foo, uint256 bar)
@@ -292,7 +292,7 @@ complexity and size of your code should be reduced.
     let address = "0x8B40a2E27C5E87aa66DfA7F80BF675176F49DCA7";
     let value = 1000;
 
-    // Solidity: functon someFunc(address foo, uint256 bar) constant returns (address result)
+    // Solidity: function someFunc(address foo, uint256 bar) constant returns (address result)
     let functionCallable = iface.functionst.someFunc
     // functionInfo
     // - inputs: { names: [ "foo", "bar" ], types: [ "address", "uint256" ] }
@@ -311,7 +311,7 @@ complexity and size of your code should be reduced.
     let address = "0x8B40a2E27C5E87aa66DfA7F80BF675176F49DCA7";
     let value = 1000;
 
-    // Solidity: functon someFunc(address foo, uint256 bar) constant returns (address result)
+    // Solidity: function someFunc(address foo, uint256 bar) constant returns (address result)
     let functionInfo = iface.functions.someFunc;
     // functionInfo
     // - type: "call" (or "transaction" for non-constant functions)
@@ -558,7 +558,7 @@ JsonRpcProvider
     // One useful and common exception it that, if any async call from
     // the provider has ever succeeded, the synchronous network property
     // is then valid. The network property is populated before any
-    // async call is made, so once an async call has finihed, the network
+    // async call is made, so once an async call has finished, the network
     // property is available synchronously.
 
     async function() {
@@ -598,7 +598,7 @@ Verifying Messages
 ------------------
 
 The message verification was moved from a static class on the Wallet to the
-utilities, along with a few other functions of the elliptic curve cryptographc
+utilities, along with a few other functions of the elliptic curve cryptographic
 exposed.
 
 .. code-block:: javascript
