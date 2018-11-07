@@ -15,7 +15,7 @@ return values directly.
 Using events, we can simulate a return value from a non-constant function.
 
 .. code-block:: javascript
-    :caption: *Solidty*
+    :caption: *Solidity*
 
     contract Example {
         event Return(uint256);
@@ -48,13 +48,13 @@ Using events, we can simulate a return value from a non-constant function.
         "function increment() returns (uint256 sum)"
     ]
 
-    const contraxctAddress = "0x..."
+    const contractAddress = "0x..."
 
     const contract = new Contract(contractAddress, abi)
 
     async function increment() {
 
-        // Call the contract, getting bsack the transaction
+        // Call the contract, getting back the transaction
         let tx = await contract.increment()
 
         // Wait for the transaction to have 2 confirmations.
@@ -85,11 +85,11 @@ Using events, we can simulate a return value from a non-constant function.
 
 -----
 
-Economic Incetives and Economic Value
-=====================================
+Economic Incentives and Economic Value
+======================================
 
 A very important aspect of Smart Contracts is consideration of the
-Ecomonic Value being protected; even a completely logically correct
+Economic Value being protected; even a completely logically correct
 Smart Contract can fall victim to misaligned economic incentives.
 
 Imagine a city with an average parking ticket cost of $60, but the

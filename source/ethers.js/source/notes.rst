@@ -12,7 +12,7 @@ Why can't I just use numbers?
 =============================
 
 The first problem many encounter when dealing with Ethereum is the concept of numbers. Most
-common currencies are broken down with very little granulairty. For example, there are only
+common currencies are broken down with very little granularity. For example, there are only
 100 cents in a single dollar. However, there are  10\ :sup:`18` **wei** in a single
 **ether**.
 
@@ -127,7 +127,7 @@ The most useful operations you will need are:
     // Promises can be re-used for their value; it will not make the external
     // call again, and will provide the exact same result every time.
     balancePromise.then(function(balance) {
-        // This *may* return before teh above allPromises, since it only
+        // This *may* return before the above allPromises, since it only
         // required one external call. Keep in mind asynchronous calls can
         // be called out of order.
         console.log(balance);
@@ -140,7 +140,7 @@ The most useful operations you will need are:
 Checksum Address
 ================
 
-A `checksum address`_ uses mixed case hexidecimal strings to encode the checksum
+A `checksum address`_ uses mixed case hexadecimal strings to encode the checksum
 information in the capitalization of the alphabetic characters, while remaining
 backwards compatible with non-checksum addresses.
 
@@ -172,7 +172,7 @@ ICAP Address
 The original method of adding a checksum to an Ethereum address was by using the
 a format compatible with `IBAN`_ addresses, using the country code **XE**. However,
 only addresses which have 0 as the first byte (i.e. the address begins with 0x00)
-are truely compatible with IBAN, so ICAP extends the definition to allow for 31
+are truly compatible with IBAN, so ICAP extends the definition to allow for 31
 alphanumeric characters (instead of the standard 30).
 
 An ICAP address has the following format::
@@ -290,7 +290,7 @@ While it may not be immediately obvious, this is intentional for security
 purposes.
 
 If it takes the legitimate user, who knows the password 5 seconds or so to
-unlock their account, that means that an attsacker must spend 5 seconds per
+unlock their account, that means that an attacker must spend 5 seconds per
 password attempt, so to guess a million passwords, requires 5 million
 seconds. Client software can streamline the process by using Secure Enclaves
 or other secure local places to store the decrypted wallet to improve the

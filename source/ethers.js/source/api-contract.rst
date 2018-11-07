@@ -332,7 +332,7 @@ new :sup:`ethers` . Contract ( addressOrName , abi , providerOrSigner )
 .. code-block:: javascript
     :caption: *Filtering an Events*
 
-    // A filter that matches my Signer as teh author
+    // A filter that matches my Signer as the author
     let filter = contract.filters.ValueChanged(wallet.address);
 
     contract.on(filter, (author, oldValue, newValue, event) => {
@@ -391,7 +391,7 @@ using ``contract.getValue()``.
 
 :sup:`prototype` . functions . *functionName*
     An object that maps each ABI function name to a function that will
-    either call (for contant functions) or sign and send a transaction
+    either call (for constant functions) or sign and send a transaction
     (for non-constant functions)
 
     Calling a **Constant** function requires either a :ref:`Provider <provider-connect>` or
@@ -464,7 +464,7 @@ transaction (or call) overrides.
         // The price (in wei) per unit of gas
         gasPrice: utils.parseUnits('9.0', 'gwei'),
 
-        // The nonce to use inthe transaction
+        // The nonce to use in the transaction
         nonce: 123,
 
         // The amount to send with the transaction (i.e. msg.value)
@@ -510,7 +510,7 @@ a Signer with a :ref:`Provider <provider-connect>`.
 Event Names
 -----------
 
-The availble eventNames are:
+The available eventNames are:
 
     - **string** -- The name of an event (e.g. "TestEvent" or "TestEvent(string, uint)")
     - **filter** -- See :ref:`Contract Filters <contract-filter>`
@@ -587,11 +587,11 @@ by the **providerOrSigner** parameter when connecting to a Contract.
 There are three possible cases for connecting a Contract using the providerOrSigner.
 
 ============================================ ========================================
-providerOrSigner                             Operation Privilidges
+providerOrSigner                             Operation Privileges
 ============================================ ========================================
 :ref:`Provider <provider-connect>`           Read-Only Access
-:ref:`Signer <signer>` (without a provider)  Write-Only Accees (as account owner)
-:ref:`Signer <signer>` (with a provider)     Read and Write Accees (as account owner)
+:ref:`Signer <signer>` (without a provider)  Write-Only Access (as account owner)
+:ref:`Signer <signer>` (with a provider)     Read and Write Access (as account owner)
 ============================================ ========================================
 
 The **providerOrSigner** is immutable, so to change the "frame of reference" to
@@ -604,7 +604,7 @@ another account or provider, use the ``connect`` function.
 Types
 =====
 
-There are many variable types avaiable in *Solidity*, some which convert
+There are many variable types available in *Solidity*, some which convert
 to and from JavaScript gracefully, and others that do not. Here are some
 note regarding passing and returning values in Contracts.
 
@@ -635,8 +635,8 @@ Any types with 56 bits (7 bytes) or more will be returned as a BigNumber,
 even if the *value* is within the 53 bit safe range.
 
 When passing numeric values in, JavaScript Numbers, hex strings or any BigNumber
-is acceptable (however, take care when using JavaScript Numbers amd performing
-mathematic operations on them).
+is acceptable (however, take care when using JavaScript Numbers and performing
+mathematical operations on them).
 
 The **uint** and **int** types are aliases for **uint256** and **int256**,
 respectively.
@@ -646,7 +646,7 @@ Strings
 -------
 
 For short strings, many Contracts use a bytes32 to encode a null-terminated
-string representation, rather than a length-prefixed respresentation, so the
+string representation, rather than a length-prefixed representation, so the
 :ref:`formatBytes32String <bytes32string>` and :ref:`parseBytes32String <bytes32string>`
 utility functions can be used to handle this conversion.
 
