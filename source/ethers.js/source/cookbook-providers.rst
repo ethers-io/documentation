@@ -77,4 +77,46 @@ temporary instances of an Ethereum node for testing.
 
 -----
 
+Custom Provider
+===============
+
+This is a much more advanced topic, and most people should not need to work this
+low level. But it is provided for those rare instances where you need some custom
+connection logic.
+
+A provider must only implement the method **perform(method, params)**. All data passed
+into a provider is sanitized by the BaseProvider subclass, and all results are normalized
+before returning them to the user.
+
+For this example, we will build a DebugProvider, which will simple proxy all commands
+through another Provider, but dump all data going back and forth.
+
+.. code-block:: javascript
+    :caption: *Sub-Class Provider for Debugging*
+
+    const ethers = require('ethers');
+
+    class DebugProvider extends ethers.providers.BaseProvider {
+        readonly provider: ethers.providers.Provider;
+
+        constructor(provider) {
+            super(provider.getNetork());
+            this.provider = provider;
+        }
+
+        // This should return a Promise (and may throw erros)
+        // method is the method name (e.g. getBalance) and params is an
+        // object with normalized values passed in, depending on the method
+        perform(method, params): Promise<any> {
+            this.provider.perform(method, params).then((result) => {
+                console.log('DEBUG', method, params, '=>', result);
+            }, (error) => {
+                console.log('DEBUG:ERROR', method, params, '=>', error);
+                throw error;
+            });
+        }
+    }
+
+-----
+
 .. EOF

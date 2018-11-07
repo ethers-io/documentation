@@ -410,6 +410,91 @@ in the utilities, along with a general serialization API.
 
 -----
 
+Custom Signer
+-------------
+
+.. code-block:: javascript
+    :caption: *Custome Signer --- ethers v3*
+
+    let signer = {
+        // Required
+        getAddress: function() { ... },
+        provider: provider,
+
+        // Optional
+        estimateGas: function(tx) { ... },
+        sendTransaction: function(tx) { ... },
+        sign: function(tx) { ... },
+    };
+
+.. code-block:: javascript
+    :caption: *Custom Signer --- JavaScript --- ethers v4*
+
+    function CustomSigner {
+        ethers.Signer.call(this);
+
+        // Optional
+        this.provider = provider;
+    }
+    inherits(CustomSigner, ethers.Signer);
+
+    // Required
+    CustomSigner.prototype.getAddress = () => { ... };
+    CustomSigner.prototype.sendTransaction = (tx) => { ... };
+    CustomSigner.prototype.signMessage = (message) => { ... };
+
+    // Optional
+    CustomSigner.prototype.connect = (provider) => { ... };
+
+.. code-block:: javascript
+    :caption: *Custom Signer --- TypeScript --- ethers v4*
+
+    import {
+        Signer,
+        utils
+    } from 'ethers';
+
+    import {
+        Provider,
+        TransactionRequest,
+        TransactionReqponse
+    } from 'ethers/providers';
+
+    class CustomSigner extends Signer {
+        this.provider = provider;
+        readony provider: Provider;
+        constructor(provider) {
+             super();
+
+             // Optional
+             this.provider = // ...
+        }
+
+        getAddress() {
+            // Return a promise to the address
+        };
+
+        sendTransaction = (transaction: TransactionRequest): Promise<TransaxctinResponse> {
+            // This will popualte missing properties, like nonce, gasLimit, etc
+            return utils.populateTransaction(transaction).then((tx) => {
+                 // Send the transaction and resolve the transaction
+            });
+        };
+
+        signMessage(message: string | ethers.utils.Arrayish): Promise<string> {
+            let dataToSign: Uint8Array = utils.hashMessage(message);;
+            // Sign ths dataToSign and resolve teh flat-format signature
+        };
+
+        // Optional; highly recommended
+        connect(provider: Provider): CustomSigner {
+            return new CustomSigner(provider);
+        }
+    }
+
+
+-----
+
 Default Provider
 ----------------
 
@@ -422,6 +507,21 @@ Default Provider
     :caption: *Default Provider --- ethers v4*
 
     let provider = ethers.getDefaultProvider();
+
+-----
+
+Big Number
+----------
+
+.. code-block:: javascript
+    :caption: *isBigNumber --- ethers v3*
+
+    let checkBigNumber = ethers.utils.isBigNumber(value);
+
+.. code-block:: javascript
+    :caption: *isBigNumber --- ethers v4*
+
+    let checkBigNumber = BigNumber.isBigNumber(value);
 
 -----
 

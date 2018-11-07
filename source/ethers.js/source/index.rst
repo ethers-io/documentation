@@ -23,7 +23,7 @@ Features
     - Meta-classes create JavaScript objects from any contract ABI, including **ABIv2** and **Human-Readable** ABI
     - Connect to Ethereum nodes over `JSON-RPC`_, `INFURA`_, `Etherscan`_, or `MetaMask`_.
     - **ENS names** are first-class citizens; they can be used anywhere an Ethereum addresses can be used
-    - **Tiny** (~84kb compressed; 270kb uncompressed)
+    - **Tiny** (~88kb compressed; 284kb uncompressed)
     - **Complete** functionality for all your Ethereum needs
     - Extensive `documentation`_
     - Large collection of **test cases** which are maintained and added to

@@ -150,43 +150,41 @@ Access Funds in a Mnemonic Phrase Wallet
 
 -----
 
-Custom Provider
+Random Mnemonic
 ===============
 
-This is a much more advanced topic, and most people should not need to work this
-low level. But it is provided for those rare instances where you need some custom
-connection logic.
-
-A provider must only implement the method **perform(method, params)**. All data passed
-into a provider is sanitized by the Provider subclass, and all results are normalized
-before returning them to the user.
-
-For this example, we will build a DebugProvider, which will simple proxy all commands
-through another Provider, but dump all data going back and forth.
+Often you may simply want a random mnemonic that is valid. It is important to
+note that **not** all random sets of words are valid; there is a checksum
+included in the binary encoding of the entropy, so it is important to use
+a method that correctly encodes this checksum.
 
 .. code-block:: javascript
-    :caption: *Sub-Class Provider for Debugging*
+    :caption: *Random Mnemonic*
 
-    const inherits = require('inherits');
     const ethers = require('ethers');
 
-    function DebugProvider(provider) {
-        ethers.providers.BaseProvider.call(this, provider.getNetwork());
-        this.subprovider = provider;
-    }
-    inherits(DebugProvider, ethers.providers.BaseProvider);
+    // All createRandom Wallets are generated from random mnemonics
+    let wallet = ethers.Wallet.createRandom();
+    let randomMnemonic = wallet.mnemonic;
 
-    // This should return a Promise (and may throw erros)
-    // method is the method name (e.g. getBalance) and params is an
-    // object with normalized values passed in, depending on the method
-    DebugProvider.prototype.perform = function(method, params) {
-        this.subprovider.perform(method, params).then((result) => {
-            console.log('DEBUG', method, params, '=>', result);
-        }, (error) => {
-            console.log('DEBUG:ERROR', method, params, '=>', error);
-            throw error;
-        });
-    }
+.. code-block:: javascript
+    :caption: *More Complex Random Mnemonic*
+
+    const utils = require('ethers/utils');
+
+    // Chose the length of your mnemonic:
+    //   - 16 bytes => 12 words (* this example)
+    //   - 20 bytes => 15 words
+    //   - 24 bytes => 18 words
+    //   - 28 bytes => 21 words
+    //   - 32 bytes => 24 words
+    let bytes = ethers.utils.random(16);
+
+    // Select the language:
+    //   - en, es, fr, ja, ko, it, zh_ch, zh_tw
+    let language = ethers.wordlists.en;
+
+    let randomMnemonic = ethers.utils.HDNode.entropyToMnemonic(bytes, language)
 
 -----
 
