@@ -138,6 +138,16 @@ Encrypted Wallets
     let address = ethers.utils.getJsonWalletAddress(json);
     let isJsonWallet = (address !== null)
 
+.. code-block:: javascript
+    :caption: *Decrypting JSON Wallets --- ethers v3*
+
+    let wallet = await ethers.Wallet.fromEncryptedWallet(json, password);
+
+.. code-block:: javascript
+    :caption: *Decrypting JSON Wallets --- ethers v4*
+
+    let wallet = await ethers.Wallet.fromEncryptedJson(json, password);
+
 
 -----
 
