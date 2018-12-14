@@ -220,29 +220,32 @@ bytes.
 Constants
 =========
 
-:sup:`utils . constants` . AddressZero
+:sup:`ethers . constants` . AddressZero
     The address ``0x0000000000000000000000000000000000000000``.
 
-:sup:`utils . constants` . HashZero
+:sup:`ethers . constants` . HashZero
     The bytes32 ``0x0000000000000000000000000000000000000000000000000000000000000000``.
 
-:sup:`utils . constants` . MaxUint256
+:sup:`ethers . constants` . MaxUint256
     The bytes32 ``0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff``.
 
-:sup:`utils . constants` . NegativeOne
+:sup:`ethers . constants` . NegativeOne
     The :ref:`BigNumber <bignumber>` ``bigNumberify(-1)``.
 
-:sup:`utils . constants` . Zero
+:sup:`ethers . constants` . Zero
     The :ref:`BigNumber <bignumber>` ``bigNumberify(0)``.
 
-:sup:`utils . constants` . One
+:sup:`ethers . constants` . One
     The :ref:`BigNumber <bignumber>` ``bigNumberify(1)``.
 
-:sup:`utils . constants` . Two
+:sup:`ethers . constants` . Two
     The :ref:`BigNumber <bignumber>` ``bigNumberify(2)``.
 
-:sup:`utils . constants` . WeiPerEther
+:sup:`ethers . constants` . WeiPerEther
     The :ref:`BigNumber <bignumber>` ``bigNumberify("1000000000000000000")``.
+
+:sup:`ethers . constants` . EtherSymbol
+    The Greek character Xi, used as the symbol for *ether*.
 
 -----
 
