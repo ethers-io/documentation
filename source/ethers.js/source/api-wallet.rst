@@ -114,7 +114,7 @@ new :sup:`Wallet` ( privateKey [ , provider ] )
     let json = JSON.stringify(data);
     let password = "foo";
 
-    ethers.Wallet.fromEncryptedWallet(json, password).then(function(wallet) {
+    ethers.Wallet.fromEncryptedJson(json, password).then(function(wallet) {
         console.log("Address: " + wallet.address);
         // "Address: 0x88a5C2d9919e46F883EB62F7b8Dd9d0CC45bc290"
     });
