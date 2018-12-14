@@ -18,6 +18,23 @@ slight refactoring and improved paradigms.
 
 -----
 
+Constants
+---------
+
+All constants have moved from the utils to the root ethers object.
+
+.. code-block:: javascript
+    :caption: *Constants --- ethers v3*
+
+    let one = ethers.utils.constants.One;
+
+.. code-block:: javascript
+    :caption: *Constants --- ethers v4*
+
+    let one = ethers.constants.One;
+
+-----
+
 Deploying Contracts
 -------------------
 
