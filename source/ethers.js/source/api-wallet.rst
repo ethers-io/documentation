@@ -37,7 +37,7 @@ new :sup:`Wallet` ( privateKey [ , provider ] )
 .. _fromEncryptedJson:
 
 :sup:`Wallet` . fromEncryptedJson ( json, password [ , progressCallback ] ) |nbsp| :sup:`=>` |nbsp| :sup:`Wallet`
-    Decrypt an encrypted Secret Storage JSON Wallet (from Geth, parity, Crowdsale
+    Decrypt an encrypted Secret Storage `JSON Wallet`_ (from Geth, parity, Crowdsale
     tools, or that was created using *prototype.encrypt* )
 
 :sup:`Wallet` . fromMnemonic ( mnemonic [ , path :sup:`= "m/44'/60'/0'/0/0"` [ , wordlist ] ] ) |nbsp| :sup:`=>` |nbsp| :sup:`Wallet`
@@ -455,5 +455,5 @@ the following properties:
 .. _BIP-039: https://github.com/bitcoin/bips/blob/master/bip-0039.mediawiki
 .. _BIP-044: https://github.com/bitcoin/bips/blob/master/bip-0044.mediawiki
 .. _Ledger Hardware Wallet Signer: https://github.com/ethers-io/ethers-ledger
-
+.. _JSON Wallet: https://medium.com/@julien.maffre/what-is-an-ethereum-keystore-file-86c8c5917b97
 .. EOF
