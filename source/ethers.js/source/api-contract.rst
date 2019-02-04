@@ -748,7 +748,7 @@ signature.
     let ABI = [
         "event Transfer(address from, address to, uint amount)",
         "function transfer(address to, uint amount)",
-        "function symbol() returns (string)"
+        "function symbol() view returns (string)"
     ]
 
 
