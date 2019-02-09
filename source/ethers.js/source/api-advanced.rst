@@ -69,6 +69,9 @@ Creating Instances
 :sup:`ethers . utils . HDNode` **. fromSeed** ( seed ) |nbsp| :sup:`=>` |nbsp| :sup:`HDNode`
     Create an HDNode from a seed.
 
+:sup:`ethers . utils . HDNode` **. fromExtendedKey** ( extendedKey ) |nbsp| :sup:`=>` |nbsp| :sup:`HDNode`
+    Create an HDNode from an extended private key (xpriv) or extended public key (xpub).
+
 
 Prototype
 ---------
@@ -88,9 +91,20 @@ Prototype
 :sup:`prototype` **. depth**
     The depth within the hierarchy of this node.
 
+:sup:`prototype` **. fingerprint**
+    The fingerprint of this node. This can be used to identify a node, but wallets
+    should handle collisions.
 
-Deriving Child Nodes
---------------------
+:sup:`prototype` **. parentFingerprint**
+    The fingerprint of this node's parent (or 0x00000000 for the master node).
+
+:sup:`prototype` **. extendedKey**
+    The extended private key (xpriv) of the node, or the extended public key (xpub)
+    if the node has been neutered.
+
+
+Deriving Child and Neutered Nodes
+---------------------------------
 
 :sup:`prototype` **. derivePath** ( path ) |nbsp| :sup:`=>` |nbsp| :sup:`HDNode`
     Derive the path from this node. Path is slash (**/**) delimited path components.
@@ -98,6 +112,10 @@ Deriving Child Nodes
     in fact a master node) and each subsequent path component should be a positive
     integer (up to 31 bits), which can optionally include an apostrophe (**'**) to
     indicate hardened derivation for that path components. See below for some examples.
+
+:sup:`prototype` **. neuter** ( ) |nbsp| :sup:`=>` |nbsp| :sup:`HDNode`
+    Returns a new instance of the node without a private key. This can be used to
+    derive an extended public key. See the BIP32 standard for more details.
 
 
 Static Methods
@@ -127,6 +145,12 @@ Static Methods
     let masterNode = HDNode.fromMnemonic(mnemonic);
 
     let standardEthereum = masterNode.derivePath("m/44'/60'/0'/0/0");
+
+    // Get the extended private key
+    let xpriv = node.extendedKey;
+
+    // Get the extended public key
+    let xpub = node.neuter().extnededKey;
 
 -----
 
