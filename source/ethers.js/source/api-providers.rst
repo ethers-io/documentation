@@ -977,6 +977,12 @@ The *EtherscanProvider* currently only supports a single topic.
         fromBlock: "latest",
         toBlock: "latest",
 
+        // Optional; The specific block to limit the query to
+        // Note: This may NOT be used with fromBlock or toBlock
+        // Note: EtherscanProvider does not support blockHash
+        // Note: This may be used for getLogs, but not as a provider Event (i.e. .on)
+        blockHash: blockHash,
+
         // Optional; An address (or ENS name) to filter by
         address: addressOrName,
 
