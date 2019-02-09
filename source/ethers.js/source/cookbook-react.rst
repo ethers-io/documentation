@@ -68,8 +68,26 @@ separately imported.
 
 -----
 
+Other Notes
+===========
+
+**console.log**
+    The use of ``console.log`` in React Native `can substantially impact performance`_.
+    For this reason, you may wish to reduce the log level to not show info and warnings.
+
+.. code-block:: javascript
+    :caption: *Change Log Level*
+
+    // The default is "info"; other options
+    // "debug", "info", "warn", "error", "off"
+    ethers.errors.setLogLevel("error");
+
+-----
+
 TODO: Include instructions on installing crypto performance
 
 - scrypt (it is VERY slow in React Native; too slow to be functional)
+
+.. _can substantially impact performance: https://docs.expo.io/versions/latest/react-native/performance/#using-consolelog-statements
 
 .. EOF
