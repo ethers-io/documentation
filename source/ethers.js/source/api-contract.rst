@@ -14,7 +14,7 @@ A Contract can emit **Events**, which can be efficiently observed by application
 be notified when a contract has performed specific operation. Events cannot be read
 by a Contract.
 
-There are two types of methods that can be called on a Contact:
+There are two types of methods that can be called on a Contract:
 
     A **Constant** method may not add, remove or change any data in the storage, nor
     log any events, and may only call **Constant** methods on other contracts. These
