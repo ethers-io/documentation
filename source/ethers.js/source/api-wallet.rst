@@ -313,7 +313,7 @@ These operations require the wallet have a provider attached to it.
 :sup:`prototype` . sendTransaction ( transaction ) |nbsp| :sup:`=>` |nbsp| :sup:`Promise<TransactionResponse>`
     Sends the *transaction* (see :ref:`Transaction Requests <transaction-request>`) to
     the network and returns a :ref:`Promise <promise>` that resolves to a
-    :ref:`Transaction Response <transaction-response>`. Any propties that are not
+    :ref:`Transaction Response <transaction-response>`. Any properties that are not
     provided will be populated from the network.
 
 .. code-block:: javascript
@@ -447,7 +447,7 @@ the following properties:
 :sup:`object` . sendTransaction ( transaction ) |nbsp| :sup:`=>` |nbsp| :sup:`Promise<TransactionResponse>`
     Sends the *transaction* (see :ref:`Transaction Requests <transaction-request>`) to
     the network and returns a :ref:`Promise <promise>` that resolves to a
-    :ref:`Transaction Response <transaction-response>`. Any propties that are not
+    :ref:`Transaction Response <transaction-response>`. Any properties that are not
     provided will be populated from the network.
 
 -----
