@@ -159,8 +159,7 @@ Example::
 
 To convert to a checksum addresses, see :ref:`getAddress() <utils-getaddress>`.
 
-.. _checksum address: https://github.com/ethereum/EIPs/issues/55
-
+.. _checksum address: https://eips.ethereum.org/EIPS/eip-55
 
 -----
 
