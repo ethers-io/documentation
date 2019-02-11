@@ -30,6 +30,7 @@ connect to both Etherscan and INFURA simultaneously:
     //  - "rinkeby"
     //  - "ropsten"
     //  - "kovan"
+    //  - "goerli"
 
     let provider = ethers.getDefaultProvider('ropsten');
 
