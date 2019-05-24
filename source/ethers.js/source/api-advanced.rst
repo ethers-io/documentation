@@ -494,8 +494,8 @@ Prototype
 Cryptographic Operations
 ------------------------
 
-:sup:`prototype` . signDigest ( messageDigest ) |nbsp| :sup:`=>` |nbsp| :sup:`hex`
-    The :ref:`flat-format Signature <signature>` for the digests, signed
+:sup:`prototype` . signDigest ( messageDigest ) |nbsp| :sup:`=>` |nbsp| :sup:`Signature`
+    The :ref:`expanded-format Signature <signature>` for the digests, signed
     by this key pair.
 
 :sup:`prototype` . computeSharedSecret ( publicOrPrivateKey ) |nbsp| :sup:`=>` |nbsp| :sup:`hex`
