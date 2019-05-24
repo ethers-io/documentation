@@ -547,7 +547,7 @@ Configuring Events
 :sup:`prototype` . on ( eventName , callback ) |nbsp| :sup:`=>` |nbsp| :sup:`Contract`
     Registers *callback* to be called on every *eventName*. Returns the contract, so calls may be chained.
 
-:sup:`prototype` . addEventListner ( eventName , callback ) |nbsp| :sup:`=>` |nbsp| :sup:`Contract`
+:sup:`prototype` . addListner ( eventName , callback ) |nbsp| :sup:`=>` |nbsp| :sup:`Contract`
     An alias for ``on``.
 
 :sup:`prototype` . once ( eventName , callback ) |nbsp| :sup:`=>` |nbsp| :sup:`Contract`
