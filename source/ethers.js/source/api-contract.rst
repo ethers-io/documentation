@@ -716,7 +716,7 @@ of a contract.
 
     // The null field indicates any value matches, this specifies
     // "any Transfer from any to myAddress"
-    let filter = contract.Transfer(null, myAddress);
+    let filter = contract.filters.Transfer(null, myAddress);
 
     // Listen for our filtered results
     contract.on(filter, (from, to, value) => {
